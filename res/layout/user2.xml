@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/LinearLayoutUser" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical">
+
+
+
+
+<WebView android:layout_height="wrap_content" android:layout_width="fill_parent" android:paddingTop="2px" android:layout_weight="1" android:background="@android:color/black" android:id="@+id/UserInfo"></WebView><TableLayout android:layout_height="wrap_content" android:id="@+id/TableLayoutOthersUsers" android:layout_width="fill_parent" android:orientation="horizontal"><TableRow android:layout_height="wrap_content" android:id="@+id/TableRowFollowers" android:layout_width="fill_parent" android:gravity="center_vertical|fill_horizontal"><ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ImageViewFollowers" android:src="@drawable/main_ui_followers_2" android:padding="2px"></ImageView><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutFollowers" android:layout_width="fill_parent" android:orientation="horizontal"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewFollowers" android:text="@string/UsersListFollowers"></TextView><TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:paddingLeft="10px" android:id="@+id/TextViewFollowersNumber"></TextView></LinearLayout>
+
+
+</TableRow><TableRow android:layout_height="wrap_content" android:id="@+id/TableRowFollowing" android:layout_width="fill_parent" android:gravity="center_vertical|fill_horizontal"><ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ImageViewFollowing" android:src="@drawable/main_ui_following_2" android:padding="2px"></ImageView><LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="horizontal" android:id="@+id/LinearLayoutFollowing"><TextView android:layout_height="wrap_content" android:id="@+id/TextViewFollowing" android:layout_width="wrap_content" android:text="@string/UserListFollowing"></TextView><TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:paddingLeft="10px" android:id="@+id/TextViewFollowingNumber"></TextView></LinearLayout>
+
+
+</TableRow></TableLayout><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutBottomButtonBar" android:orientation="horizontal" android:layout_width="fill_parent"><Button android:layout_height="wrap_content" android:id="@+id/ButtonAddRemoveUser" android:text="@string/BtnAddUser" android:layout_width="fill_parent" android:layout_weight="1"></Button><Button android:layout_height="wrap_content" android:text="@string/BtnPrivateMsg" android:id="@+id/ButtonSendPrivateMsg" android:layout_width="fill_parent" android:layout_weight="1"></Button><Button android:layout_height="wrap_content" android:text="@string/BtnBlockUser" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/ButtonBlockUnBlockUser"></Button></LinearLayout>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

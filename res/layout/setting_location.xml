@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_gravity="center"
+	android:layout_width="fill_parent" android:layout_marginLeft="10px"
+	android:layout_marginRight="10px" android:orientation="vertical"
+	android:id="@+id/LinearLayoutSettingLocation">
+
+<LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutLocationSettingTop" android:gravity="center_horizontal" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewSettingLocationDescription" android:text="@string/SettingLocationDescription"></TextView></LinearLayout>
+
+<CheckBox android:layout_height="wrap_content" android:id="@+id/CheckBoxSettingLocationActivation" android:text="@string/SettingLocationActive" android:layout_width="fill_parent"></CheckBox>
+
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/LinearLayoutAccurancyLocation"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewLocationAccuracy" android:text="@string/LocationAccuracy" android:layout_gravity="center_vertical"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/SpinnerLocationAccuracy" android:layout_marginLeft="10px"></Spinner>
+</LinearLayout><LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/LinearLayoutSyncLocation"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewLocationSyncInfo" android:text="@string/LocationTimeInfo" android:layout_gravity="center_vertical"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/SpinnerLocationTimeSync" android:layout_marginLeft="10px" android:layout_marginRight="10px"></Spinner><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/LocationTimeInfoUnit" android:id="@+id/TextViewLocationTimeSyncUnit" android:layout_gravity="center_vertical"></TextView>
+</LinearLayout><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutSettingLocationBottom" android:layout_width="fill_parent" android:gravity="fill_horizontal"><ImageButton android:layout_height="wrap_content" android:id="@+id/ImageButtonSettingCredentialsSave" android:layout_weight="1" android:layout_width="fill_parent" android:src="@drawable/ic_menu_save"></ImageButton><ImageButton android:layout_height="wrap_content" android:id="@+id/ImageButtonSettingCredentialsCancel" android:layout_weight="1" android:layout_width="fill_parent" android:src="@drawable/ic_menu_close_clear_cancel" android:clickable="false"></ImageButton></LinearLayout>
+
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/SplashScreen" android:gravity="center" android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent">
+<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ImageViewSplash" android:keepScreenOn="true" android:scaleType="fitCenter" android:src="@drawable/meemidroid"></ImageView>
+</LinearLayout>

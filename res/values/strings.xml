@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+	<string name="app_name">MeemiDroid</string>
+	<string name="BtnBack">Back</string>
+	<string name="BtnSearch">Search</string>
+	<string name="BtnHome">User Home</string>
+	<string name="BtnSend">Send</string>
+	<string name="MenuSetting">Settings</string>
+	<string name="MenuExit">Exit</string>
+	<string name="MenuCredentials">User Credentials</string>
+	<string name="MenuLocation">Location Setting</string>
+	<string name="MenuImage">Images Setting</string>
+	<string name="LblUser">User Name:</string>
+	<string name="LblPassword">Password:</string>
+	<string name="SettingCredentialDescription">Please, insert yours Meemi access credentials</string>
+	<string name="TitleSettingCredentials">Meemi Credentials</string>
+	<string name="SettingLocationDescription">Do you want give your location to Meemi?</string>
+	<string name="TitleSettingLocation">Location Settings</string>
+	<string name="SettingLocationActive">Active location data</string>
+	<string name="SettingLocationAddress">Send address to Meemi</string>
+	<string name="AllertExit">Are you sure you want to exit?</string>
+	<string name="TextYes">Yes</string>
+	<string name="TextNo">No</string>
+	<string name="AllertNoCredentials">You have to set your Meemi account credentials</string>
+	<string name="ConfirmSend">The message has been sent</string>
+	<string name="NoSend">The message has not been sent: please check your
+		user name and your password</string>
+	<string name="AllertCredentialsOk">Your new credentials have been saved</string>
+	<string name="AllertLocationOk">Your Location preferences have been saved</string>
+	<string name="AllertImageOk">Your Image Resize preferences have been saved</string>
+	<string name="AllertWrogCredentials">We can not check your credentials. Please, check your Internet connection.</string>
+	<string name="BtnUserInfo">My Profile</string>
+	<string name="BtnFollowingUsers">Following</string>
+	<string name="BtnFollowerUsers">Followers</string>
+	<string name="BtnSetting">Settings</string>
+	<string name="BtnMessages">Post Meemi</string>
+	<string name="MenuAbout">About...</string>
+	<string name="BtnPrivateMsg">Send</string>
+	<string name="BtnRemoveUser">Remove</string>
+	<string name="BtnBlockUser">Block</string>
+	<string name="BtnUnblockUser">Unblock</string>
+	<string name="BtnAddUser">Add</string>
+	<string name="AllertWaiting">Please wait...</string>
+	<string name="AllertNoUserAccount">Impossible to access to user\'s information</string>
+	<string name="LocationTimeInfoUnit">min.</string>
+    <string name="LocationTimeInfo">Sync every </string>
+    <string name="LocationTypeCountry">Country</string>
+    <string name="LocationTypeRegion">Region</string>
+    <string name="LocationTypeDistrict">District</string>
+    <string name="LocationTypeCity">City</string>
+    <string name="LocationTypeAddress">Address</string>
+    <string name="LocationAccuracy">Location accuracy:</string>
+    <string name="TitleSettingImage">Image Dimension Settings</string>
+	<string name="SettingImageResize">Activate auto image resize</string>
+	<string name="SettingImageMaxDim">Max image dimensions:</string>
+	<string name="SettingImageQuality">Image quality:</string>
+	<string name="MeemiSentPrivateUsersList">Send to (as private message):</string>
+	<string name="DateFormat">MMMM d, yyyy</string>
+<string name="UserListFollowing">Followers of</string>
+    <string name="UsersListFollowers">Followed by</string>
+<string name="UserListContextMenuShow">Show User Info</string>
+    <string name="UserListContextMenuSend">Send Private Message</string>
+<string name="AllertBlockUser">Are you sure you want to block this user?</string>
+<string name="BtnSave">Save</string>
+    <string name="BtnCancel">Cancel</string>
+<string name="OtherUserListFollowing">Followers of</string>
+    <string name="OtherUserListFollowers">Followed by</string>
+<string name="InfoNoConnection">Is  not possible to access to User information</string>
+<string name="UserListActivityFollowing">Followed by</string>
+    <string name="UserListActivityFollowers">Followers of</string>
+<string name="search_hint">Search into Meemi</string>
+
+    
+
+<string name="MsgComment">Num. of Comments: </string>
+    <string name="BtnReadMessages">Read Meemis</string>
+<string name="AllertUnfollowUser">Are you sure you want to unfollow this user?</string>
+<string name="UserListItemExtraLoad">More...</string>
+
+<string name="ListItemExtraLoad">More...</string>
+<string name="MeemiListContextMenuShowUser">Show User Info</string>
+<string name="MeemiListContextMenuReply">Reply</string>
+    <string name="MeemiListContextMenuShowComments">Show Reply</string>
+<string name="DateHourFormat">MMMM d, yyyy - h:mm aa</string>
+<string name="MenuRefresh">Refresh</string>
+<string name="BtnReply">Reply</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/LinearLayoutMessagesPost" android:layout_gravity="center_vertical|center_horizontal|center" android:orientation="vertical">
+  
+<TextView android:layout_height="wrap_content" android:textStyle="bold" android:layout_width="fill_parent" android:layout_gravity="center_horizontal" android:id="@+id/TextMeemiType" android:text="Type: Text"></TextView><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutPrivate" android:layout_width="fill_parent" android:orientation="vertical"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewPrivate" android:text="@string/MeemiSentPrivateUsersList"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/EditTextPrivateUsers"></EditText>
+</LinearLayout><LinearLayout android:orientation="horizontal" android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/LinearLayoutMessage"><EditText android:layout_width="wrap_content" android:id="@+id/EditTextMeemi" android:layout_height="fill_parent" android:layout_weight="1" android:lines="5"></EditText><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ButtonPostMeemi" android:text="@string/BtnSend"></Button>
+</LinearLayout>
+
+
+
+
+
+</LinearLayout>

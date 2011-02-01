@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/UserRow"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">    
+
+    <ImageView android:id="@+id/UserRowAvatar"
+        android:maxHeight="64px" android:maxWidth="64px" android:minHeight="64px" android:minWidth="64px" android:scaleType="fitCenter" android:layout_width="64px" android:layout_height="64px" android:drawingCacheQuality="high"/>
+
+    <TextView android:id="@+id/UserRowNick"
+            android:textStyle="bold"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:textSize="20sp" android:layout_marginLeft="10px" android:ellipsize="marquee"/>
+</LinearLayout>

@@ -1,0 +1,227 @@
+package adiep.meemidroid;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
+
+public class SenderTask extends AsyncTask<Void, Void, String> {	
+	public String result = null;
+	
+	public static final int IMAGE = 0;
+	public static final int TEXT = 1;
+	public static final int LINK = 2;
+	
+	public SenderTask(final String uid, final String pwd, Context mContext, Activity MainActivity) {
+		this.url = SenderTask.MeemiUrl + uid + "/save";
+		
+		this.uid = uid;
+		this.pwd = pwd;
+		
+		this.mContext = mContext;
+		this.MyActivity = MainActivity;
+	}
+	
+	public void setType(int meme_type) {
+		this.meme_type = meme_type;
+	}
+	
+	public void addText(String meme_text) {
+		this.meme_text = meme_text;
+	}
+	
+	public void addLink(String link) {
+		this.link = link;
+	}
+
+	public void addImage(Uri image) {
+		this.image = image;
+	}
+	
+	public void updateUid(String uid) {
+		this.uid = uid;
+	}
+	
+	public void updatePwd(String pwd) {
+		this.pwd = pwd;
+	}
+	
+	public void prepareData() {
+		
+		data0 = "--data_boundary\r\n";
+		data0 += "Content-Disposition: form-data; name=\"meemi_id\"" + newline + newline;
+		data0 += uid + boundary;
+		data0 += "Content-Disposition: form-data; name=\"pwd\"" + newline + newline;
+		
+		try{
+			MessageDigest pass = MessageDigest.getInstance("SHA-256");
+			pass.reset();
+			byte messageDigest[] = pass.digest( pwd.getBytes() );
+			
+			StringBuffer pwd_hash = new StringBuffer();
+			String tmp;
+			for (int i=0;i<messageDigest.length;i++) {
+				tmp = Integer.toHexString(0xFF & messageDigest[i]);
+				if (tmp.length() == 1)
+					pwd_hash.append('0');
+				pwd_hash.append(tmp);
+			}
+			
+			data0 += pwd_hash + boundary;
+		}catch(Exception ex){
+			ex.printStackTrace();   
+		}
+		
+		data0 += "Content-Disposition: form-data; name=\"app_key\"" + newline + newline;
+		data0 += "cf5557e9e1ed41683e1408aefaeeb4c6ee23096b" + boundary;
+		
+		data0 += "Content-Disposition: form-data; name=\"meme_type\"" + newline + newline;
+		
+		switch(this.meme_type){
+		case TEXT:
+			data0 +="text" + boundary;
+			break;
+		case IMAGE:
+			data0 +="image" + boundary;
+			break;
+		case LINK:
+			data0 +="link" + boundary;
+			break;
+		}
+		
+		data0 += "Content-Disposition: form-data; name=\"text_content\"" + newline + newline;
+		data0 += meme_text + boundary;
+		
+		if(meme_type == LINK){
+			data0 += "Content-Disposition: form-data; name=\"link_url\"" + newline + newline;
+			data0 += link + boundary;
+		}
+	}
+	
+	private DataOutputStream prepareOutputStream(URLConnection conn){
+		DataOutputStream writer = null;
+		try {
+        	conn.setDoOutput(true);
+        	conn.setDoInput(true);
+        	conn.setRequestProperty("Content-type", "multipart/form-data; boundary=data_boundary");
+        	writer = new DataOutputStream(conn.getOutputStream());
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		return writer;
+	}
+	
+	private URLConnection getConnection(String address){
+		URLConnection conn = null;
+		try {
+        	URL url = new URL(address);
+        	conn = url.openConnection();
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		return conn;
+	}
+	
+	private String getResponse(URLConnection conn){
+		String response = null;
+    	try{
+        	StringBuffer answer = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                answer.append(line);
+            }
+            response = answer.toString();
+            reader.close();
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+		return response;
+    }
+	
+	@Override
+	public String doInBackground(Void...voids ) {
+		// TODO Auto-generated method stub
+		URLConnection conn = getConnection(url);
+		DataOutputStream writer = prepareOutputStream(conn);
+		try {
+			writer.writeBytes(data0);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		if (meme_type == IMAGE){
+			try {
+				File img = new File(image.getPath());
+				FileInputStream read = (FileInputStream) mContext.getContentResolver().openInputStream(image);
+				data0 = "Content-Disposition: file; filename=\"" + img.getName() + "\"; name=\"img_pc\"" + newline + newline;
+				writer.writeBytes(data0);
+				int bytes = read.available();
+				byte imgb[] = new byte[bytes];
+				int r = read.read(imgb, 0, bytes);
+				writer.write(imgb, 0, r);
+				writer.writeBytes(boundary);
+				writer.close();
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		try{
+			writer.close();
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+		result = getResponse(conn);
+		return result;
+	}
+	
+	protected void onPreExecute(){
+		dialog = ProgressDialog.show(mContext, "", "sending...", true);
+	}
+	
+	protected void onPostExecute(String result){
+		dialog.dismiss();
+		
+		/*
+		try {
+			if( result.contains("code=\"7\"") ) {
+				Toast T = Toast.makeText(MyActivity, R.string.ConfirmSend, MeemiDroidMain.ALLERT_TIME);
+	        	T.setGravity(Gravity.CENTER, 0, 0);
+	        	T.show();
+			} else if( result.contains("code=\"3\"") | result.contains("code=\"8\"") ) {
+				Toast T = Toast.makeText(MyActivity, R.string.NoSend, MeemiDroidMain.ALLERT_TIME);
+	        	T.setGravity(Gravity.CENTER, 0, 0);
+	        	T.show();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		*/
+	}
+	
+	private static final String MeemiUrl = "http://meemi.com/api/";
+	
+	private static final String boundary = "\r\n--data_boundary\r\n";
+	private static final String newline = "\r\n";
+	
+	private String url;
+	private String meme_text;
+	private int meme_type;
+	private String data0;
+	private String link;
+	private Uri image;
+	private ProgressDialog dialog;
+	private String uid;
+	private String pwd;
+	private Context mContext;
+	private Activity MyActivity;
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest android:installLocation="preferExternal"
+    package="adiep.meemidroid" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.3.0" android:versionCode="10">
+    <application android:debuggable="true" android:icon="@drawable/icon"
+        android:label="@string/app_name" android:name="adiep.meemidroid.MeemiDroidApplication">
+        <activity android:label="@string/app_name" android:name="adiep.meemidroid.dialogs.MeemiDroidMain" android:configChanges="keyboardHidden|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="adiep.meemidroid.dialogs.SplashScreen" android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name="adiep.meemidroid.dialogs.AboutScreen"/>
+        <activity android:name="adiep.meemidroid.dialogs.UserScreen" android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name="adiep.meemidroid.dialogs.MeemiSendScreen" android:configChanges="keyboardHidden|orientation">
+            <intent-filter android:priority="10000">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="adiep.meemidroid.dialogs.MeemiUsersList" android:configChanges="keyboardHidden|orientation"/>
+       
+    	
+    <activity android:name="adiep.meemidroid.dialogs.MeemiList" android:configChanges="keyboardHidden|orientation"></activity>
+    <activity android:name="adiep.meemidroid.dialogs.MeemiRepliesList" android:configChanges="keyboardHidden|orientation"></activity>
+</application>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="8"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+
+</manifest>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_gravity="center"
+	android:layout_width="fill_parent" android:layout_marginLeft="10px"
+	android:layout_marginRight="10px" android:orientation="vertical"
+	android:id="@+id/LinearLayoutSettingLocation">
+
+<LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutLocationSettingTop" android:gravity="center_horizontal" android:layout_width="fill_parent"></LinearLayout>
+
+<CheckBox android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/CheckBoxSettingImageResize" android:text="@string/SettingImageResize"></CheckBox>
+
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/LinearLayoutAccurancyLocation"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:id="@+id/TextViewMaxImageDims" android:text="@string/SettingImageMaxDim"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/SpinnerImageSize" android:layout_marginLeft="10px"></Spinner>
+
+
+</LinearLayout><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutImageQuality" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewImageQuality" android:text="@string/SettingImageQuality"></TextView><SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:max="100" android:id="@+id/SeekBarImageQuality" android:layout_marginLeft="10px" android:layout_weight="1"></SeekBar>
+<TextView android:layout_height="wrap_content" android:text="0" android:layout_width="fill_parent" android:layout_marginLeft="10px" android:layout_gravity="center_vertical" android:textSize="10pt" android:id="@+id/TextViewImageQualityChecker" android:layout_weight="1.5"></TextView>
+</LinearLayout><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutSettingLocationBottom" android:layout_width="fill_parent" android:gravity="fill_horizontal"><ImageButton android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:src="@drawable/ic_menu_save" android:id="@+id/ImageButtonSettingImageResizeSave"></ImageButton><ImageButton android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:src="@drawable/ic_menu_close_clear_cancel" android:clickable="false" android:id="@+id/ImageButtonSettingImageResizeCancel"></ImageButton></LinearLayout>
+
+
+
+
+
+</LinearLayout>

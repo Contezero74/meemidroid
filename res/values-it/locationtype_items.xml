@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="LocationTypeItems">
+	<item>@string/LocationTypeCountry</item>
+	<item>@string/LocationTypeRegion</item>
+	<item>@string/LocationTypeDistrict</item>
+	<item>@string/LocationTypeCity</item>
+	<item>@string/LocationTypeAddress</item>
+</string-array>
+</resources>

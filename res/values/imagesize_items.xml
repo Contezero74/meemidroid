@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="ImageSizetems">
+	<item>320x200</item>
+	<item>640x400</item>
+	<item>640x480</item>
+	<item>800x600</item>
+	<item>1024x768</item>
+	<item>1280x600</item>
+	<item>1280x720</item>
+	<item>1920x1080</item>
+</string-array>
+</resources>

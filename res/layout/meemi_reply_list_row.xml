@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/MsgRow">    
+
+    <LinearLayout android:layout_height="wrap_content" android:id="@+id/MsgMainInfo" android:orientation="horizontal" android:layout_width="fill_parent"><ImageView android:scaleType="fitCenter" android:drawingCacheQuality="high" android:layout_width="80px" android:layout_height="80px" android:minWidth="80px" android:maxHeight="80px" android:maxWidth="80px" android:minHeight="80px" android:id="@+id/UserAvatar"/><LinearLayout android:id="@+id/MsgInfo" android:layout_width="fill_parent" android:orientation="vertical" android:layout_height="wrap_content" android:layout_marginLeft="10px"><TextView android:textStyle="bold" android:layout_width="fill_parent" android:layout_height="wrap_content" android:textSize="20sp" android:ellipsize="marquee" android:id="@+id/UserNick"/><TextView android:layout_height="wrap_content" android:gravity="right" android:layout_width="fill_parent" android:textStyle="italic" android:id="@+id/MeemeTime"></TextView><TextView android:layout_height="wrap_content" android:id="@+id/Message" android:layout_width="fill_parent" android:linksClickable="true" android:autoLink="web|email"></TextView>
+</LinearLayout>
+
+
+
+</LinearLayout>
+
+    
+
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="right" android:id="@+id/OtherInfo" android:textStyle="italic"></TextView>
+</LinearLayout>
