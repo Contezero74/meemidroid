@@ -155,7 +155,7 @@ public class Utility {
 		CleanMeemi = CleanMeemi.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<i>$2</i>");
 		
 		// ScreenName 
-		CleanMeemi = CleanMeemi.replaceAll("@([\\d\\_a-zA-z]*?)(\\W)", " <i>@$1</i>$2");
+		CleanMeemi = CleanMeemi.replaceAll("\\@(\\w{5,})", " <i>@$1</i>$2");
 		
 		return CleanMeemi;
 	}
@@ -202,7 +202,7 @@ public class Utility {
 		HTML = HTML.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<a class=\"link\" href=\"$1\" title=\"go to $2\">$2</a>");
 		
 		// ScreenName 
-		HTML = HTML.replaceAll("@([\\d\\_a-zA-z]*?)(\\W)", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>$2");
+		HTML = HTML.replaceAll("\\@(\\w{5,})", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>");
 		
 		return HTML;
 	}
