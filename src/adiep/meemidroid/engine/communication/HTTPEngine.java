@@ -3,7 +3,7 @@ package adiep.meemidroid.engine.communication;
 import java.util.ArrayList;
 import java.util.List;
 
-import adiep.meemidroid.support.backcompatibility.Pair;
+import adiep.meemidroid.support.compatibility.Pair;
 
 /**
  * This abstract class represents the engine used to low level access to the HTTP Post protocol.

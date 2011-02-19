@@ -12,7 +12,7 @@ import org.apache.http.protocol.HTTP;
 
 import android.content.Context;
 import android.util.Log;
-import adiep.meemidroid.support.backcompatibility.Pair;
+import adiep.meemidroid.support.compatibility.Pair;
 
 /**
  * This class represents the engine used to low level access multipart HTTP Post protocol.

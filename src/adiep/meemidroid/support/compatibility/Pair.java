@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package adiep.meemidroid.support.backcompatibility;
+package adiep.meemidroid.support.compatibility;
 
 /**
  * Container to ease passing around a tuple of two objects. This object provides a sensible

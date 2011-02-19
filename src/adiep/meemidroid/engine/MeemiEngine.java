@@ -19,7 +19,7 @@ import adiep.meemidroid.Utility;
 import adiep.meemidroid.engine.communication.HTTPEngine;
 import adiep.meemidroid.engine.communication.HTTPMultipartPostEngine;
 import adiep.meemidroid.engine.communication.HTTPPostEngine;
-import adiep.meemidroid.support.backcompatibility.Pair;
+import adiep.meemidroid.support.compatibility.Pair;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -32,8 +32,8 @@ import android.util.Log;
  * This class represents the engine used to access to the Meemi social network.
  * It's based upon the version 3.x of the Meemi's API.
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 1.0
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 1.4
  */
 public class MeemiEngine {
 	// list of Lifestream
@@ -54,6 +54,8 @@ public class MeemiEngine {
 	public static final int CB_POST_MESSAGE			= 10;
 	public static final int CB_POST_IMAGE			= 11;
 	public static final int CB_REPLY_MESSAGE		= 12;
+	public static final int CB_POST_LOCATION		= 13;
+	public static final int CB_SEARCH				= 14;
 	
 	
 	/**
@@ -315,6 +317,19 @@ public class MeemiEngine {
 	}
 	
 	/**
+	 * This method executes a search into the Meemi messages.
+	 * 
+	 * @param Search			the search object
+	 * @param C					the current Android context
+	 * @param CallbackInstance	the {@link Callbackable} instance (can be null)
+	 * 
+	 * @see #parseMeemiStreamResult(MeemiEngineResult)
+	 */
+	public void executeSearch(final String Search, Context C, Callbackable CallbackInstance) {		
+		executeCommand(SEARCH, new String[]{Search}, true, CB_SEARCH, false, true, C, CallbackInstance);
+	}
+	
+	/**
 	 * This method posts a message to Meemi.
 	 * 
 	 * @param Message			the message to post
@@ -394,12 +409,22 @@ public class MeemiEngine {
 	 * @see #parsePostMeemiResult(MeemiEngineResult)
 	 */
 	public void postLocation(final String Location) {
-		if ( !LastSentLocation.equals(Location) ) {			
+		if ( !LastSentLocation.equals(Location) ) {
+			/*
+			try {
+				String Base64Location = Base64.encodeToString(Location.getBytes(HTTP.UTF_8), Base64.URL_SAFE | Base64.NO_WRAP);
+			
+				executeCommand(POST_LOCATION, new String[]{Base64Location}, true, CB_POST_LOCATION, false, false, MeemiDroidApplication.getContext(), null);
+			} catch (UnsupportedEncodingException ex) {
+				Log.e( "MeemiEngine - postLocation", "Problem during location UTF-8 encoding" + ex.toString() );
+			}
+			/*/
 			List<Pair<String, String>> Args = new ArrayList<Pair<String,String>>();
 			Args.add( new Pair<String, String>( "meme_type", "text") );
 			Args.add( new Pair<String, String>( "text_content", "(l: " + Location + ")" ) );
 			
-			executeCommand( POST_MESSAGE, NO_CMD_ARGS, Args, true, CB_POST_MESSAGE, false, true, MeemiDroidApplication.getContext(), null );
+			executeCommand( POST_MESSAGE, NO_CMD_ARGS, Args, true, CB_POST_LOCATION, false, true, MeemiDroidApplication.getContext(), null );
+			//*/
 			
 			LastSentLocation = Location;
 		
@@ -549,6 +574,7 @@ public class MeemiEngine {
 	 * This method can be used to parse response from:
 	 * - {@link #getLifeStream(String, String, int, Context, Callbackable)}
 	 * - {@link #getReplies(String, String, int, Context, Callbackable)}
+	 * - {@link #executeSearch(String, Context, Callbackable)}
 	 * 
 	 * @param Result	the {@link MeemiEngineResult} to parse
 	 * 
@@ -556,6 +582,7 @@ public class MeemiEngine {
 	 * 
 	 * @see #getLifeStream(String, String, int, Context, Callbackable)
 	 * @see #getReplies(String, String, int, Context, Callbackable)
+	 * @see #executeSearch(String, Context, Callbackable)
 	 */
 	public static final List<TreeMap<String, String>> parseMeemiStreamResult(final MeemiEngineResult Result) {
 		List<TreeMap<String, String>> Meemis = new ArrayList<TreeMap<String, String>>();
@@ -827,8 +854,7 @@ public class MeemiEngine {
 	/**
 	 * This private class represents an asynchronous REST request.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
-	 * 
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 * @version 1.4
 	 */
 	private class SenderTask extends AsyncTask< SenderArguments, Void, MeemiEngineResult > {
@@ -1008,7 +1034,7 @@ public class MeemiEngine {
 		/**
 		 * The common part of the URL for the REST query.
 		 */
-		private static final String MeemiUrl = "http://meemi.com/api3/";
+		private static final String MeemiUrl = "http://meemi.com/api3/"; 
 	}
 
 	
@@ -1064,6 +1090,13 @@ public class MeemiEngine {
 	private static final String USERLIFESTREAM		= "%s/wf/page_%s/limit_30";
 	private static final String REPLIES				= "%s/%s/replies/%s/20";
 	private static final String GETSINLEMEEME		= "%s/%s";
+	private static final String SEARCH				= "p/search/%s";
+
+	/* FIXME: this is a workaround to solve the issue #12.
+	 * When a location API will be developed, We will fix it. 
+	 */
+	//private static final String POST_LOCATION		= "../m/p/set-location/%s";
+	
 	
 	private static final String[] NO_CMD_ARGS = new String[]{};
 	

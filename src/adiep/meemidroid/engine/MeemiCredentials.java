@@ -16,7 +16,7 @@ import android.util.Log;
 public class MeemiCredentials {
 	
 	/**
-	 * This is tha class constructor; at the moment it does nothing.
+	 * This is the class constructor; at the moment it does nothing.
 	 */
 	public MeemiCredentials() {
 	}

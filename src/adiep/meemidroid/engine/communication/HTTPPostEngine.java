@@ -20,7 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
-import adiep.meemidroid.support.backcompatibility.Pair;
+import adiep.meemidroid.support.compatibility.Pair;
 
 /**
  * This class represents the engine used to low level access no-multipart HTTP Post protocol.
