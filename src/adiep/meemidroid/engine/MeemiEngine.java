@@ -24,8 +24,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.util.Log;
 
 /**
@@ -1064,11 +1066,18 @@ public class MeemiEngine {
 		if ( "image".equals( M.getString("meme_type") ) ) {
 			Message.put( "Image", M.getString("image") );
 			Message.put( "ImageThumbnail", M.getString("image_small") );
+			Message.put( "Content", "[img] ".concat(Message.get("Content")) );
 		}
 	
 		if ( "video".equals( M.getString("meme_type") ) ) {
 			String VideoSrc = Utility.getVideoSrc( M.getString("video") );
 			Message.put( "Video", VideoSrc );
+			Message.put( "Content", "[video] ".concat(Message.get("Content")) );
+		}
+				
+		if ( "link".equals( M.getString("meme_type") ) ) {
+			String linkContent = "[link] <a href='".concat(M.getString("link")).concat("'>").concat(Message.get("Content")).concat("</a>");
+			Message.put( "Content", linkContent);
 		}
 				
 		return Message;
