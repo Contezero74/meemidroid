@@ -62,7 +62,7 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 		
 		LazyAdapterRepliesList.ViewInflater = (LayoutInflater) MyActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		MyImageLoader = new ImageLoader( A.getBaseContext(), MeemiDroidApplication.USERS_AVATARS_CACHE );
+		MyImageLoader = ImageLoader.getInstance();
 		
 		JSAccountClick = new AccountClick(A);
 	}

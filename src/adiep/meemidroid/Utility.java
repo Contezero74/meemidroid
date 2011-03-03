@@ -25,8 +25,8 @@ import android.widget.Toast;
 /**
  * This class contains all the code utility used in this application. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.4
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
  */
 public class Utility {
 	/**
@@ -130,8 +130,14 @@ public class Utility {
 	public static final String fromMeemiToCleanText(final String Meemi) {
 		String CleanMeemi = "";
 		
+		// strange (and dangerous) chars... 
+		CleanMeemi = Meemi.replaceAll("%", "&#037;");
+		
+		// carriage return
+		CleanMeemi = CleanMeemi.replaceAll("(\\r\\n|\\n|\\r)", " ");
+		
 		// Bold		
-		CleanMeemi = Meemi.replaceAll("\\[b\\](.*?)\\[/b\\]", "<b>$1</b>");
+		CleanMeemi = CleanMeemi.replaceAll("\\[b\\](.*?)\\[/b\\]", "<b>$1</b>");
 		CleanMeemi = CleanMeemi.replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>");
 		
 		// Italic
@@ -155,7 +161,7 @@ public class Utility {
 		CleanMeemi = CleanMeemi.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<i>$2</i>");
 		
 		// ScreenName 
-		CleanMeemi = CleanMeemi.replaceAll("@([\\d\\_a-zA-z]*?)(\\W)", " <i>@$1</i>$2");
+		CleanMeemi = CleanMeemi.replaceAll("\\@(\\w{5,})", " <i>@$1</i>");
 		
 		return CleanMeemi;
 	}
@@ -198,11 +204,14 @@ public class Utility {
 		// Code
 		HTML = HTML.replaceAll("\\[code\\](.*?)\\[/code\\]", "<pre><code>$1</code></pre>");
 		
-		// Link: TODO change link to meemi post view activity (when ready :O) for links to Meemi world
+		// HTML urls (TODO: probably will be removed in future versions)
+		HTML = HTML.replaceAll("(http|https|ftp|mailto)://(\\S+)", "<a class=\"link\" href=\"$1://$2\" title=\"go to $2\">$1://$2</a>" );
+		
+		// Link - TODO: change link to meemi post view activity (when ready :O) for links to Meemi world
 		HTML = HTML.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<a class=\"link\" href=\"$1\" title=\"go to $2\">$2</a>");
 		
 		// ScreenName 
-		HTML = HTML.replaceAll("@([\\d\\_a-zA-z]*?)(\\W)", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>$2");
+		HTML = HTML.replaceAll("\\@(\\w{5,})", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>");
 		
 		return HTML;
 	}

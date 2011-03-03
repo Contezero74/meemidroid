@@ -11,8 +11,8 @@ import android.content.Context;
  * class: in this way we can use this class to manage all the global
  * object instance with a life equal to the application one.
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.2
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.3
  */
 public class MeemiDroidApplication extends Application {
 	
@@ -41,8 +41,17 @@ public class MeemiDroidApplication extends Application {
 		} else {
 			Engine.stopLocationSync();
 		}
+		
+		if ( Prefs.isAvatarCacheToClean() ) {
+			Engine.clearAvatarCache(false, ApplicationContext);
+		}
 	}
 	
+	/**
+	 * This method returns the {@link Context} of the current application.
+	 * 
+	 * @return	the {@link Context} of the current application
+	 */
 	public static Context getContext() {
 		return ApplicationContext;
 	}
@@ -57,6 +66,9 @@ public class MeemiDroidApplication extends Application {
 	 */
 	public static MeemiPreferences Prefs = null;
 	
+	/**
+	 * This is the directory used ad cache for Avatars images
+	 */
 	public static final String USERS_AVATARS_CACHE = "MeemiDroidCache";
 	
 	

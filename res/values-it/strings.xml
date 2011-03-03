@@ -80,4 +80,11 @@
 <string name="LocationTimeInfoUnit">min.</string>
     <string name="app_name">MeemiDroid</string>
     <string name="LblPassword">Password:</string>
+<string name="TitleSettingGeneral">Impostazioni Generali</string>
+    <string name="TitleSettingAvatar">Avatar</string>
+    <string name="AvatarsAutoClean">Cancellazione Automatica della Cache degli Avatar</string>
+    <string name="AvatarsCleanCacheBtn">Cancella la Cache</string>
+<string name="VideoTag">[video]</string>
+    <string name="ImageTag">[immagine]</string>
+    <string name="LinkTag">[link]</string>
 </resources>

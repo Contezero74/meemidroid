@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import adiep.meemidroid.ImageLoader;
-import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.R.id;
 import android.app.Activity;
@@ -54,7 +53,7 @@ public class LazyAdapterUsersList extends BaseAdapter {
 		
 		LazyAdapterUsersList.ViewInflater = (LayoutInflater) MyActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		MyImageLoader = new ImageLoader( A.getBaseContext(), MeemiDroidApplication.USERS_AVATARS_CACHE );
+		MyImageLoader = ImageLoader.getInstance();
 	}
 	
 	/**

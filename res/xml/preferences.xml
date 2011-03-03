@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<Preference android:title="@string/MenuCredentials"
+		android:key="CredentialConfigPreference"></Preference>
+		
+	<PreferenceScreen android:title="@string/TitleSettingGeneral" android:key="GeneralSharePreferences">
+		<PreferenceCategory android:key="AvatarsShareCategory" android:title="@string/TitleSettingAvatar">
+			<CheckBoxPreference android:key="CBAutoCleanAvatars" android:title="@string/AvatarsAutoClean"></CheckBoxPreference>
+			<Preference android:title="@string/AvatarsCleanCacheBtn" android:key="AvatarsCleanCacheBtn"></Preference>
+		</PreferenceCategory>
+	</PreferenceScreen>
+
+	<PreferenceScreen android:title="@string/TitleSettingImage"
+		android:key="ImagesSharePreferences">
+		<CheckBoxPreference android:key="CBAutoManagementImage"
+			android:title="@string/SettingImageResize"></CheckBoxPreference>
+		<ListPreference android:entries="@array/ImageSizetems"
+			android:dialogTitle="@string/SettingImageMaxDim" android:title="@string/SettingImageMaxDim"
+			android:entryValues="@array/ImageSizetems" android:key="LstImageSize" android:defaultValue="320x200"></ListPreference>
+		<adiep.meemidroid.support.compatibility.SeekBarAndroidPreference
+			android:title="@string/SettingImageQuality"
+			android:dialogMessage="@string/SettingImageQuality" android:max="100" android:defaultValue="85" android:key="JpegQuality"></adiep.meemidroid.support.compatibility.SeekBarAndroidPreference>
+
+	</PreferenceScreen>
+	<PreferenceScreen android:key="LocationPreferences"
+		android:title="@string/TitleSettingLocation">
+		<CheckBoxPreference android:title="@string/SettingLocationActive" android:key="UseLocation"></CheckBoxPreference>
+		<ListPreference android:dialogTitle="@string/LocationAccuracy"
+			android:entryValues="@array/LocationTypeItems" android:entries="@array/LocationTypeItems"
+			android:title="@string/LocationAccuracy" android:key="UseLocationAccurancyList" android:defaultValue="@string/LocationTypeCountry"></ListPreference>
+		<ListPreference android:entryValues="@array/LocationSyncItems"
+			android:entries="@array/LocationSyncItems" android:title="@string/LocationTimeInfo"
+			android:dialogTitle="@string/LocationTimeInfo" android:key="LocationSyncMin" android:defaultValue="5"></ListPreference>
+	</PreferenceScreen>
+</PreferenceScreen>

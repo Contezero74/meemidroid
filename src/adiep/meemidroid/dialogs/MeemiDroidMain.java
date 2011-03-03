@@ -6,8 +6,6 @@ import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.Utility;
 import adiep.meemidroid.dialogs.settings.CredentialsSettingDialog;
-import adiep.meemidroid.dialogs.settings.ImageSettingDialog;
-import adiep.meemidroid.dialogs.settings.LocationSettingDialog;
 import adiep.meemidroid.engine.MeemiEngine;
 import adiep.meemidroid.engine.MeemiEngine.Callbackable;
 import adiep.meemidroid.engine.MeemiEngine.MeemiEngineResult;
@@ -33,8 +31,8 @@ import android.widget.Button;
  * This activity represents the main menu: the user can choose to read
  * meemis (i.e., Meemi messages), to access her profile, and so on.
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.35
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
  */
 public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable {
 	/**
@@ -133,31 +131,8 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	        	
 	        	break;
 	        case R.id.itemSettings:
-	        	
-	        	//*
-				AlertDialog.Builder builder = new AlertDialog.Builder(MeemiDroidMain.this);
-				builder.setTitle("Settings");
-				builder.setItems(R.array.SettingsMenuItems, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	switch(item) {
-				    	case 0:
-				    		showDialog(SETTING_CREDENTIAL_DIALOG); break;
-				    	case 1:
-				    		showDialog(SETTING_LOCATION_DIALOG); break;
-				    	case 2:
-				    		showDialog(SETTING_IMAGE_DIALOG); break;
-				    	default:
-				    		;
-				    	}
-				    	
-				    }
-				});
-				AlertDialog alert = builder.create();
-				alert.show();
-				/*/
-				Intent Settings = new Intent(MeemiDroidMain.this, SettingsDialog.class);
-				startActivityForResult(Settings, ACTIVITY_SETTINGS);
-				//*/
+	        	Intent Settings = new Intent(MeemiDroidMain.this, PreferencesScreen.class);
+				startActivityForResult(Settings, ACTIVITY_PREFERENCES);
 	        	
 	        	break;
 		  default:
@@ -231,12 +206,6 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 				 */
 				D = new CredentialsSettingDialog( this, MeemiDroidApplication.Engine.getCredentials(), new CredentialSettingDialogDismissing() );
 				//D.setOnDismissListener( new CredentialSettingDialogDismissing() );
-				break;
-			case SETTING_LOCATION_DIALOG:
-				D = new LocationSettingDialog(this, MeemiDroidApplication.Prefs);
-				break;
-			case SETTING_IMAGE_DIALOG:
-				D = new ImageSettingDialog(this, MeemiDroidApplication.Prefs);
 				break;
 			case CONFIRM_EXIT_APPLICATION:
 				AlertDialog.Builder B = new AlertDialog.Builder(this);
@@ -348,7 +317,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 * This private class manages the interaction with the "Send Meemi" button on the
 	 * activity: it's show the Meemi screen to post a new message.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private final class MeemiSendListener implements OnClickListener {
 		public void onClick(View arg0) {
@@ -365,7 +334,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 * 
 	 * @see UserScreen
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private final class UserInfoListener implements OnClickListener {
 		public void onClick(View arg0) {
@@ -380,7 +349,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 * This private class manages the interaction with followings retrieve.
 	 * 
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private final class UserFollowings implements OnClickListener {
 		public void onClick(View arg0) {			
@@ -397,7 +366,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	/**
 	 * This private class manages the interaction with followings retrieve.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private final class UserFollowers implements OnClickListener {
 		public void onClick(View arg0) {
@@ -415,7 +384,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 * This private class manages the dismiss of the Credential Setting Dialog Box;
 	 * in order to check if the current user is logged or not.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private final class CredentialSettingDialogDismissing implements DialogInterface.OnDismissListener {
 		@Override
@@ -426,16 +395,14 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 			
 			MeemiDroidApplication.Engine.getUserProfile(LogedUserID, MeemiDroidMain.this, MeemiDroidMain.this);
 		}
-		
 	}
+	
 	
 	private String LogedUserID = null;
 	private Map<String, String> LogedUserInfo = null;
 	private boolean IsFirstTimeLogin = true; 
 	
 	private static final int SETTING_CREDENTIAL_DIALOG = 0;
-	private static final int SETTING_LOCATION_DIALOG = 1;
-	private static final int SETTING_IMAGE_DIALOG = 2;
 	
 	private static final int CONFIRM_EXIT_APPLICATION = 10;
 	
@@ -445,5 +412,5 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	private static final int ACTIVITY_MEEMI = 3;
 	private static final int ACTIVITY_USERSLIST = 4;
 	private static final int ACTIVITY_MEEMISSLIST = 5;
-	// private static final int ACTIVITY_SETTINGS = 6;
+	private static final int ACTIVITY_PREFERENCES = 6;
 }
