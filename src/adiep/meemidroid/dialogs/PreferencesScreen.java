@@ -3,6 +3,7 @@ package adiep.meemidroid.dialogs;
 import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.dialogs.settings.CredentialsSettingDialog;
+import adiep.meemidroid.engine.MeemiEngine;
 import adiep.meemidroid.support.compatibility.SeekBarAndroidPreference;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -21,7 +22,7 @@ import android.preference.PreferenceManager;
  * application.
  * 
  * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
- * @version 1.1
+ * @version 1.2
  */
 public class PreferencesScreen extends PreferenceActivity {
 	/**
@@ -52,7 +53,10 @@ public class PreferencesScreen extends PreferenceActivity {
 		ImageSize = (ListPreference)findPreference("LstImageSize");
 		ImageSize.setSummary( ImageSize.getValue() );
 		ImageQuality = (SeekBarAndroidPreference)findPreference("JpegQuality");
-		ImageQuality.setSummary( Integer.toString( ImageQuality.getProgress() ) );
+		
+		// we need to use Prefs workaround in order to avoid the indeterminate state of the
+		// Preference Progress Screen
+		ImageQuality.setSummary( Integer.toString( MeemiDroidApplication.Prefs.getImageQuality() ) );
 		
 		ImagePreferencesChangeListener IP = new ImagePreferencesChangeListener();
 		ImageSize.setOnPreferenceChangeListener(IP);
@@ -75,6 +79,12 @@ public class PreferencesScreen extends PreferenceActivity {
 		LocationSync.setOnPreferenceChangeListener(LL);
 		
 		changeLocationEnableStatus( EnableLocation.isChecked() );
+		
+		
+		// general
+		// - Avatars
+		CleanAvatarsCacheBtn = findPreference("AvatarsCleanCacheBtn");
+		CleanAvatarsCacheBtn.setOnPreferenceClickListener( new CleanAvatarsCacheClick() );
 	}
 	
 	/**
@@ -105,6 +115,19 @@ public class PreferencesScreen extends PreferenceActivity {
 		
 		return D;
 	}
+    
+    /**
+     * This method check if the location sync need to be enable or
+     * disable and setup the system accordling.
+     */
+    private void enableDisableLocationSync() {
+    	// location sync
+        if ( EnableLocation.isChecked() ) {
+                MeemiDroidApplication.Engine.startLocationSync( MeemiDroidApplication.Prefs.getLocationSyncMin() );
+        } else {
+                MeemiDroidApplication.Engine.stopLocationSync();
+        }
+    }
     
     
 	/**
@@ -192,6 +215,9 @@ public class PreferencesScreen extends PreferenceActivity {
 			// before the real status change of the combobox
 			changeLocationEnableStatus( !EnableLocation.isChecked() );
 			
+			// location sync
+			enableDisableLocationSync();
+			
 			return true;
 		}
 	}
@@ -221,6 +247,9 @@ public class PreferencesScreen extends PreferenceActivity {
 			}
 			
 			E.commit();
+			
+			// location sync
+			enableDisableLocationSync();
 			
 			return true;
 		}
@@ -257,6 +286,25 @@ public class PreferencesScreen extends PreferenceActivity {
 	}
 	
 	
+	/**
+	 * This private class manages the interaction with the "Clean Avatars Cache"
+	 * widget, that works as a button.
+	 * This class deletes the full content of the Avatars cache.
+	 * 
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+	 * 
+	 * @see MeemiEngine#CleanAvatarsCaches()
+	 */
+	private final class CleanAvatarsCacheClick implements OnPreferenceClickListener {
+		@Override
+		public boolean onPreferenceClick(Preference arg0) {
+			MeemiDroidApplication.Engine.clearAvatarCache(true, PreferencesScreen.this);
+			
+			return true;
+		}
+	}
+	
+	
 	private Preference CredentialBtn = null;
 	
 	private CheckBoxPreference EnableImage = null;
@@ -266,6 +314,8 @@ public class PreferencesScreen extends PreferenceActivity {
 	private CheckBoxPreference EnableLocation = null;
 	private ListPreference LocationAccurancy = null;
 	private ListPreference LocationSync = null;
+	
+	private Preference CleanAvatarsCacheBtn = null;
 	 
 	
 	private static final int SETTING_CREDENTIAL_DIALOG = 0;

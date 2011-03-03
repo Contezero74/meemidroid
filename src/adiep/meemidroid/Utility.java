@@ -130,8 +130,14 @@ public class Utility {
 	public static final String fromMeemiToCleanText(final String Meemi) {
 		String CleanMeemi = "";
 		
+		// strange (and dangerous) chars... 
+		CleanMeemi = Meemi.replaceAll("%", "&#037;");
+		
+		// carriage return
+		CleanMeemi = CleanMeemi.replaceAll("(\\r\\n|\\n|\\r)", " ");
+		
 		// Bold		
-		CleanMeemi = Meemi.replaceAll("\\[b\\](.*?)\\[/b\\]", "<b>$1</b>");
+		CleanMeemi = CleanMeemi.replaceAll("\\[b\\](.*?)\\[/b\\]", "<b>$1</b>");
 		CleanMeemi = CleanMeemi.replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>");
 		
 		// Italic
@@ -198,7 +204,10 @@ public class Utility {
 		// Code
 		HTML = HTML.replaceAll("\\[code\\](.*?)\\[/code\\]", "<pre><code>$1</code></pre>");
 		
-		// Link: TODO change link to meemi post view activity (when ready :O) for links to Meemi world
+		// HTML urls (TODO: probably will be removed in future versions)
+		HTML = HTML.replaceAll("(http|https|ftp|mailto)://(\\S+)", "<a class=\"link\" href=\"$1://$2\" title=\"go to $2\">$1://$2</a>" );
+		
+		// Link - TODO: change link to meemi post view activity (when ready :O) for links to Meemi world
 		HTML = HTML.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<a class=\"link\" href=\"$1\" title=\"go to $2\">$2</a>");
 		
 		// ScreenName 

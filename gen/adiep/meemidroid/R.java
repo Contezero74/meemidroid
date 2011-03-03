@@ -171,6 +171,8 @@ public final class R {
         public static final int AllertUnfollowUser=0x7f060046;
         public static final int AllertWaiting=0x7f060027;
         public static final int AllertWrogCredentials=0x7f06001b;
+        public static final int AvatarsAutoClean=0x7f060051;
+        public static final int AvatarsCleanCacheBtn=0x7f060052;
         public static final int BtnAddUser=0x7f060026;
         public static final int BtnBack=0x7f060001;
         public static final int BtnBlockUser=0x7f060024;
@@ -192,9 +194,11 @@ public final class R {
         public static final int ConfirmSend=0x7f060016;
         public static final int DateFormat=0x7f060036;
         public static final int DateHourFormat=0x7f06004c;
+        public static final int ImageTag=0x7f060054;
         public static final int InfoNoConnection=0x7f060040;
         public static final int LblPassword=0x7f06000b;
         public static final int LblUser=0x7f06000a;
+        public static final int LinkTag=0x7f060055;
         public static final int ListItemExtraLoad=0x7f060048;
         public static final int LocationAccuracy=0x7f060030;
         public static final int LocationTimeInfo=0x7f06002a;
@@ -228,7 +232,9 @@ public final class R {
         public static final int SettingLocationDescription=0x7f06000e;
         public static final int TextNo=0x7f060014;
         public static final int TextYes=0x7f060013;
+        public static final int TitleSettingAvatar=0x7f060050;
         public static final int TitleSettingCredentials=0x7f06000d;
+        public static final int TitleSettingGeneral=0x7f06004f;
         public static final int TitleSettingImage=0x7f060031;
         public static final int TitleSettingLocation=0x7f06000f;
         public static final int UserListActivityFollowers=0x7f060042;
@@ -238,6 +244,7 @@ public final class R {
         public static final int UserListFollowing=0x7f060037;
         public static final int UserListItemExtraLoad=0x7f060047;
         public static final int UsersListFollowers=0x7f060038;
+        public static final int VideoTag=0x7f060053;
         public static final int app_name=0x7f060000;
         public static final int search_hint=0x7f060043;
     }

@@ -19,34 +19,22 @@ import android.widget.ImageView;
  * This class is an image loader specialized for downloading images starting from an URL.
  * It's use a simple cache on the SDCard in order improve performance. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.3
- * 
- * TODO: transform into a singleton
+ * @author @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
  */
 public class ImageLoader {
 	/**
-	 * This is the ImageLoader constructor. It setups the cache directory and prepares 
-	 * a support thread to download images.
-	 *  
-	 * @param C	the Android application context
-	 * @param CacheDirPath	plausible directory on the SDCard to use as cache
+	 * This method returns the shared instanced object of the ImageLoader class,
+	 * if exists. Otherwise it creates the shared instance.
+	 * 
+	 * @return	the shared instanced object of the ImageLoader class
 	 */
-	public ImageLoader(Context C, final String CacheDirPath) {
-		// Make the background thread low priority. This way it will not affect
-		// the UI performance
-		photoLoaderThread.setPriority(Thread.NORM_PRIORITY - 1);
-
-		// Find the dir to save cached images
-		if ( android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED) ) {
-			CacheDir = new File(android.os.Environment.getExternalStorageDirectory(), CacheDirPath);
-		} else {
-			CacheDir = C.getCacheDir();
+	public static ImageLoader getInstance() {
+		if (null == ILInstance) {
+			ILInstance = new ImageLoader(MeemiDroidApplication.getContext(), MeemiDroidApplication.USERS_AVATARS_CACHE);
 		}
 		
-		if ( !CacheDir.exists() ) {
-			CacheDir.mkdirs();
-		}
+		return ILInstance;
 	}
 
 	/**
@@ -237,6 +225,30 @@ public class ImageLoader {
 		}
 	}
 	
+	/**
+	 * This is the ImageLoader constructor. It setups the cache directory and prepares 
+	 * a support thread to download images.
+	 *  
+	 * @param C	the Android application context
+	 * @param CacheDirPath	plausible directory on the SDCard to use as cache
+	 */
+	private ImageLoader(Context C, final String CacheDirPath) {
+		// Make the background thread low priority. This way it will not affect
+		// the UI performance
+		photoLoaderThread.setPriority(Thread.NORM_PRIORITY - 1);
+
+		// Find the dir to save cached images
+		if ( android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED) ) {
+			CacheDir = new File(android.os.Environment.getExternalStorageDirectory(), CacheDirPath);
+		} else {
+			CacheDir = C.getCacheDir();
+		}
+		
+		if ( !CacheDir.exists() ) {
+			CacheDir.mkdirs();
+		}
+	}
+	
 	// the simplest in-memory cache implementation. This should be replaced with
 	// something like SoftReference or BitmapOptions.inPurgeable(since 1.6)
 	private HashMap<String, Bitmap> Cache = new HashMap<String, Bitmap>();
@@ -251,4 +263,7 @@ public class ImageLoader {
 	 * This is the stub images used when images are not yet loaded.
 	 */
 	private final static int stub_id = R.drawable.stub;
+	
+	
+	private static ImageLoader ILInstance = null;
 }

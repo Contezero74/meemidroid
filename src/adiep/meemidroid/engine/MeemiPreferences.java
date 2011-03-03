@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
  * This class represents the MeemiDroid client preferences.
  * 
  * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
- * @version 1.0
+ * @version 1.2
  */
 public class MeemiPreferences {	
 	/**
@@ -25,7 +25,7 @@ public class MeemiPreferences {
 	 * @return true if the location retrieving is set
 	 */
 	public boolean isLocationEnabled() {
-		return UseLocation;
+		return SharedPref.getBoolean(MEEMI_LOCATION, false);
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class MeemiPreferences {
 	 * @return the location accuracy
 	 */
 	public int getLocationAccuracy() {
-		return UseLocationAccuracy;
+		return SharedPref.getInt(MEEMI_LOCATION_ACCURACY, 0);
 	}
 	
 	/**
@@ -48,6 +48,14 @@ public class MeemiPreferences {
 	 * @return the time range used to sync the location with Meemi (expressed in minutes)
 	 */
 	public int getLocationSyncMin() {
+		int LocationSyncMin = 5;
+		
+		try {
+			LocationSyncMin = Integer.parseInt( SharedPref.getString(MEEMI_LOCATION_SYNC_MIN, "5") );
+		} catch (Exception ex) {
+			LocationSyncMin = LocationEngine.ONLYDURINGMESSAGESENDING;
+		}
+		
 		return LocationSyncMin;
 	}
 	
@@ -58,7 +66,7 @@ public class MeemiPreferences {
 	 * @return the index of the spinbox used to set the time range to sync the location with Meemi
 	 */
 	public int getLocationSyncIndex() {
-		return LocationSyncIndex;
+		return SharedPref.getInt(MEEMI_LOCATION_SYNC_INDEX, 1);
 	}
 	
 	/**
@@ -86,7 +94,7 @@ public class MeemiPreferences {
 	 * @return true if the auto image resize is enabled
 	 */
 	public boolean isImageResizeEnabled() {
-		return UseImageResize;
+		return SharedPref.getBoolean(MEEMI_IMAGERESIZE, false);
 	}
 	
 	/**
@@ -103,7 +111,7 @@ public class MeemiPreferences {
 	 * @return the index of the max dimension for the images to upload
 	 */
 	public int getImageResizeIndex() {
-		return MaxImageDimensionIndex;
+		return SharedPref.getInt(MEEMI_IMAGEDIMS, 0);
 	}
 	
 	/**
@@ -117,7 +125,7 @@ public class MeemiPreferences {
 	public int[] getImageResize() {
 		int[] Size = new int[2];
 		
-		switch (MaxImageDimensionIndex) {
+		switch ( getImageResizeIndex() ) {
 			case 1:	Size[0] = 640;	Size[1] = 400;	break;
 			case 2:	Size[0] = 640;	Size[1] = 480;	break;
 			case 3:	Size[0] = 800;	Size[1] = 600;	break;
@@ -138,7 +146,19 @@ public class MeemiPreferences {
 	 * @return	the quality wanted from the resized image
 	 */
 	public int getImageQuality() {
-		return ImageQuality;
+		return SharedPref.getInt(MEEMI_JPEGQUALITY, 85);
+	}
+	
+	
+	/**
+	 * This method returns true if the Avatar caches need to be deleted at
+	 * the start of MeemiDroid, otherwise returns false.
+	 * 
+	 * @return	true if the Avatar caches need to be deleted at the start of
+	 * 			MeemiDroid
+	 */
+	public boolean isAvatarCacheToClean() {
+		return SharedPref.getBoolean(MEEMI_CLEANAVATARS, false);
 	}
 	
 	
@@ -149,7 +169,7 @@ public class MeemiPreferences {
 	public void load() {
 		Context C = MeemiDroidApplication.getContext();
 		
-		SharedPreferences P = PreferenceManager.getDefaultSharedPreferences( MeemiDroidApplication.getContext() );
+		SharedPref = PreferenceManager.getDefaultSharedPreferences( MeemiDroidApplication.getContext() );
 		
 		// Use MODE_WORLD_READABLE and/or MODE_WORLD_WRITEABLE to grant access to other applications
 		SharedPreferences Old = C.getSharedPreferences(MEEMI_PREFS, Context.MODE_PRIVATE);
@@ -157,31 +177,13 @@ public class MeemiPreferences {
 		// For back compatibility we have to:
 		// 1) if the old preferences exist copy to the new ones
 		if ( Old.getBoolean(OLD_ALREADY_REMOVED, false) ) {
-			copyPreferences(P, Old);
+			copyPreferences(SharedPref, Old);
 		
 			// 2) remove the oldest
 			removePreferences(Old);
 		}
-				
-		// location
-		UseLocation = P.getBoolean(MEEMI_LOCATION, false);
-		
-		UseLocationAccuracy = P.getInt(MEEMI_LOCATION_ACCURACY, 0);
-		
-		try {
-			LocationSyncMin = Integer.parseInt( P.getString(MEEMI_LOCATION_SYNC_MIN, "5") );
-		} catch (Exception ex) {
-			LocationSyncMin = LocationEngine.ONLYDURINGMESSAGESENDING;
-		}
-		
-		LocationSyncIndex = P.getInt(MEEMI_LOCATION_SYNC_INDEX, 1);
-		
-		LastKnowLocation = P.getString(MEEMI_LAST_KNOW_LOCATION, "");
-		
-		// images resize
-		UseImageResize = P.getBoolean(MEEMI_IMAGERESIZE, false);
-		MaxImageDimensionIndex = P.getInt(MEEMI_IMAGEDIMS, 0);
-		ImageQuality = P.getInt(MEEMI_JPEGQUALITY, 85);
+
+		LastKnowLocation = SharedPref.getString(MEEMI_LAST_KNOW_LOCATION, "");
 	}
 	
 	/**
@@ -254,6 +256,8 @@ public class MeemiPreferences {
 		E.commit();
 	}
 	
+	private SharedPreferences SharedPref = null;
+	
 	private static final String MEEMI_PREFS = "MeemiDroidPreferences";
 	
 	// location
@@ -263,10 +267,6 @@ public class MeemiPreferences {
 	private static final String MEEMI_LOCATION_SYNC_INDEX = "LocationSyncIndex";
 	private static final String MEEMI_LAST_KNOW_LOCATION = "LastKnowLocation";
 	
-	private boolean UseLocation = false;
-	private int UseLocationAccuracy = 0;
-	private int LocationSyncMin = 5;
-	private int LocationSyncIndex = 1;
 	private String LastKnowLocation = "";
 	
 	
@@ -275,9 +275,9 @@ public class MeemiPreferences {
 	private static final String MEEMI_IMAGEDIMS = "MaxImageDimensionIndex";
 	private static final String MEEMI_JPEGQUALITY = "JpegQuality";
 	
-	private boolean UseImageResize = false;
-	private int MaxImageDimensionIndex = 0;
-	private int ImageQuality	= 85;
+	// general
+	// - Avatars
+	private static final String MEEMI_CLEANAVATARS = "CBAutoCleanAvatars";
 	
 	
 	// old Preferences:

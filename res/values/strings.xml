@@ -84,4 +84,11 @@
 <string name="DateHourFormat">MMMM d, yyyy - h:mm aa</string>
 <string name="MenuRefresh">Refresh</string>
 <string name="BtnReply">Reply</string>
+<string name="TitleSettingGeneral">General Settings</string>
+    <string name="TitleSettingAvatar">Avatars</string>
+    <string name="AvatarsAutoClean">Auto Clean Avatars Cache</string>
+    <string name="AvatarsCleanCacheBtn">Clean the Cache Now</string>
+<string name="VideoTag">[video]</string>
+    <string name="ImageTag">[img]</string>
+    <string name="LinkTag">[link]</string>
 </resources>

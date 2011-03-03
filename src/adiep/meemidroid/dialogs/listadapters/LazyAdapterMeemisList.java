@@ -56,7 +56,7 @@ public class LazyAdapterMeemisList extends BaseAdapter {
 		
 		LazyAdapterMeemisList.ViewInflater = (LayoutInflater) MyActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		MyImageLoader = new ImageLoader( A.getBaseContext(), MeemiDroidApplication.USERS_AVATARS_CACHE );
+		MyImageLoader = ImageLoader.getInstance();
 	}
 	
 	/**
@@ -190,7 +190,13 @@ public class LazyAdapterMeemisList extends BaseAdapter {
 				holder.Nick.setText( (String)Item.get("MeemerName") );
 				holder.Time.setText( (String)Item.get("Time") );
 				
-				String CleanText = Utility.fromMeemiToCleanText( (String)Item.get("Content") );
+				String CleanText = "";
+				
+				if ( Item.containsKey("ExtraContent") ) {
+					CleanText = (String)Item.get("ExtraContent") + " ";
+				}
+				
+				CleanText += Utility.fromMeemiToCleanText( (String)Item.get("Content") );
 				holder.Message.setText( Html.fromHtml(CleanText) );
 				
 				holder.OtherInfo.setText( MeemiDroidApplication.getContext().getString(R.string.MsgComment) + (String)Item.get("NumOfComments") );
