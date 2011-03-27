@@ -37,10 +37,6 @@ import android.util.Log;
  * @version 1.4
  */
 public class MeemiEngine {
-	// list of Lifestream
-	public static final String GENERAL_LS			= "meme-sfera";
-	public static final String PERSONAL_LS			= "__personal_life_stream__";
-	
 	// Identifiers for method callback
 	public static final int CB_NONE					= 0;
 	public static final int CB_CREDENTIAL_CHECK		= 1;
@@ -57,6 +53,14 @@ public class MeemiEngine {
 	public static final int CB_REPLY_MESSAGE		= 12;
 	public static final int CB_POST_LOCATION		= 13;
 	public static final int CB_SEARCH				= 14;
+	public static final int CB_NOTIFY_STATS			= 15;
+	public static final int CB_NOTIFY_MEMES			= 16;
+	public static final int CB_NOTIFY_REPLIES		= 17;
+	public static final int CB_NOTIFY_PRIV_MEMES	= 18;
+	public static final int CB_NOTIFY_PRIV_REPLIES	= 19;
+	public static final int CB_NOTIFY_MENTIONS		= 20;
+	public static final int CB_NOTIFY_FOLLOWERS		= 21;
+	public static final int CB_MARK_AS_READ			= 22;
 	
 	
 	/**
@@ -286,13 +290,27 @@ public class MeemiEngine {
 	 * 
 	 * @see #parseMeemiStreamResult(MeemiEngineResult)
 	 */
-	public void getLifeStream(final String User, final String LifeStream, final int Page, Context C, Callbackable CallbackInstance) {		
+	public void getLifeStream(final String User, final int LifeStream, final int Page, Context C, Callbackable CallbackInstance) {
 		String Cmd		= USERLIFESTREAM;
 		String[] Args	= new String[]{User, Integer.toString(Page)};
 		
-		if ( !(PERSONAL_LS.equals(LifeStream)) ) {
+		switch (LifeStream) {
+		case LifestreamConst.GENERAL_LS:
+			Args		= new String[]{GENERAL_LS_API, Integer.toString(Page)};
 			Cmd			= LIFESTREAM;
-			Args		= new String[]{LifeStream, Integer.toString(Page)};
+			break;
+			
+		case LifestreamConst.PRIVATE_LS:
+			Args		= new String[]{PRIVATE_LS_API, Integer.toString(Page)};
+			Cmd			= LIFESTREAM;
+			break;
+		case LifestreamConst.PRIVATE_SENT_LS:
+			Args		= new String[]{PRIVATE_SENT_LS_API, Integer.toString(Page)};
+			Cmd			= LIFESTREAM;
+			
+			break;
+		default:
+			// nothing to do
 		}
 		
 		executeCommand(Cmd, Args, true, CB_LIFESTREAM, false, true, C, CallbackInstance);
@@ -410,7 +428,7 @@ public class MeemiEngine {
 			Args.add( new Pair<String, String>( "private_sn", PrivateUsersList.trim() ) );
 		}
 		
-		executeCommand(POST_MESSAGE, new String[]{}, Args, true, ImageUri, CB_POST_IMAGE, false, true, C, CallbackInstance);
+		executeCommand(POST_MESSAGE, NO_CMD_ARGS, Args, true, ImageUri, CB_POST_IMAGE, false, true, C, CallbackInstance);
 	}
 	
 	/**
@@ -444,6 +462,89 @@ public class MeemiEngine {
 		}
 	}
 	
+	/**
+	 * This method returns the notification stats.
+	 * This method runs in background by default.
+	 * 
+	 * @param C					the current Android context
+	 * @param CallbackInstance	the {@link Callbackable} instance (can be null)
+	 * 
+	 * @see #parseNotifyStats(MeemiEngineResult)
+	 */
+	public void getNotifiesStats(Context C, Callbackable CallbackInstance) {	
+		executeCommand(GET_NOTIFY_STATS, NO_CMD_ARGS, true, CB_NOTIFY_STATS, false, false, C, CallbackInstance);
+	}
+	
+	/**
+	 * This method returns a set of messages representing the selected notification
+	 * filter.
+	 * 
+	 * @param NotifyType		the notification filter to use (@see NotifiesConst)
+	 * @param C					the current Android context
+	 * @param CallbackInstance	the {@link Callbackable} instance (can be null)
+	 * 
+	 * @see #parseMeemiStreamResult(MeemiEngineResult)
+	 */
+	public void getNotifies(final int NotifyType, Context C, Callbackable CallbackInstance) {
+		int CallbackMathod = 0;
+		String[] Args = NO_CMD_ARGS;
+		boolean ExecuteCmd = true;
+		
+		switch (NotifyType) {
+		case NotifiesConst.NOTIFY_MEMES:
+			CallbackMathod = CB_NOTIFY_MEMES;
+			Args = new String[]{NTF_MEMES};
+			break;
+			
+		case NotifiesConst.NOTIFY_REPLIES:
+			CallbackMathod = CB_NOTIFY_REPLIES;
+			Args = new String[]{NTF_REPLIES};
+			break;
+			
+		case NotifiesConst.NOTIFY_PRIVATE_MEMES:
+			CallbackMathod = CB_NOTIFY_PRIV_MEMES;
+			Args = new String[]{NTF_PRIVATE_MEMES};
+			break;
+			
+		case NotifiesConst.NOTIFY_PRIVATE_REPLIES:
+			CallbackMathod = CB_NOTIFY_PRIV_REPLIES;
+			Args = new String[]{NTF_PRIVATE_REPLIES};
+			break;
+			
+		case NotifiesConst.NOTIFY_MENTIONS:
+			CallbackMathod = CB_NOTIFY_MENTIONS;
+			Args = new String[]{NTF_MENTIONS};
+			break;
+			
+		case NotifiesConst.NOTIFY_FOLLOWERS:
+			CallbackMathod = CB_NOTIFY_FOLLOWERS;
+			Args = new String[]{NTF_FOLLOWERS};
+			break;
+		
+		default:
+			ExecuteCmd = false;
+		}
+		
+		if (ExecuteCmd) {
+			executeCommand(NOTIFIES, Args, true, CallbackMathod, false, false, C, CallbackInstance);
+		} else {
+			Log.w("MeemiEngine - getNotifies", "The notification type " + NotifyType + " is not defined");
+		}
+	}
+	
+	/**
+	 * This method sets a specified message as read.
+	 * 
+	 * @param MeemiId			the identifier of the message to set to read
+	 * @param C					the current Android context
+	 * @param CallbackInstance	the {@link Callbackable} instance (can be null)
+	 * 
+	 * @see #parseResultStatus(MeemiEngineResult)
+	 */
+	public void markAsRead(final String MeemiId, Context C, Callbackable CallbackInstance) {
+		executeCommand(MARK_AS_READ, new String[]{MeemiId}, true, CB_MARK_AS_READ, false, false, C, CallbackInstance);
+	}
+	
 	
 	/**
 	 * This method parses the response to the following requests and return
@@ -460,6 +561,7 @@ public class MeemiEngine {
 	 * @see #isCredentialValid(Context, Callbackable)
 	 * @see #setUserBlock(String, boolean, Context, Callbackable)
 	 * @see #setUserFollow(String, boolean, Context, Callbackable)
+	 * @see #markAsRead(String, Context, Callbackable)
 	 */
 	public static final boolean parseResultStatus(final MeemiEngineResult Result) {
 		boolean IsStatusOk = false;
@@ -467,7 +569,8 @@ public class MeemiEngine {
 		if (null != Result) {
 			if (CB_CREDENTIAL_CHECK == Result.CallbackMethod ||
 				CB_USER_BLOCK == Result.CallbackMethod ||
-				CB_USER_FOLLOW == Result.CallbackMethod) {
+				CB_USER_FOLLOW == Result.CallbackMethod ||
+				CB_MARK_AS_READ == Result.CallbackMethod) {
 				
 				try {
 					if (null != Result.Object) {
@@ -586,6 +689,7 @@ public class MeemiEngine {
 	 * - {@link #getLifeStream(String, String, int, Context, Callbackable)}
 	 * - {@link #getReplies(String, String, int, Context, Callbackable)}
 	 * - {@link #executeSearch(String, Context, Callbackable)}
+	 * - {@link #getNotifies(int, Context, Callbackable)}
 	 * 
 	 * @param Result	the {@link MeemiEngineResult} to parse
 	 * 
@@ -594,6 +698,7 @@ public class MeemiEngine {
 	 * @see #getLifeStream(String, String, int, Context, Callbackable)
 	 * @see #getReplies(String, String, int, Context, Callbackable)
 	 * @see #executeSearch(String, Context, Callbackable)
+	 * @see #getNotifies(int, Context, Callbackable)
 	 */
 	public static final List<TreeMap<String, String>> parseMeemiStreamResult(final MeemiEngineResult Result) {
 		List<TreeMap<String, String>> Meemis = new ArrayList<TreeMap<String, String>>();
@@ -625,11 +730,11 @@ public class MeemiEngine {
 	}
 	
 	/**
-	 * This method parses the response t
+	 * This method parses the response to
 	 * {@link #getSingleMeeme(String, String, Context, Callbackable)} and returns a
 	 * {@link Map} containing all the message information needed
 	 * 
-	 * @param Result	tthe {@link MeemiEngineResult} to parse
+	 * @param Result	the {@link MeemiEngineResult} to parse
 	 * 
 	 * @return a {@link Map} the message data 
 	 * 
@@ -699,6 +804,42 @@ public class MeemiEngine {
 		}
 		
 		return MeemeId;		
+	}
+	
+	
+	/**
+	 * This method parses the response to the {@link #getNotifiesStats(Context, Callbackable)}
+	 * method.
+	 * 
+	 * @param Result	the {@link MeemiEngineResult} to parse
+	 * 
+	 * @return a {@link Map} representing the stats about Meemi notification 
+	 * 
+	 * @see #getNotifiesStats(Context, Callbackable)
+	 */
+	public static final TreeMap<String, String> parseNotifyStats(final MeemiEngineResult Result) {
+		TreeMap<String, String> Notifies = new TreeMap<String, String>();
+		
+		if (null != Result) {
+			if (CB_NOTIFY_STATS == Result.CallbackMethod) {
+				try {
+					if (null != Result.Object) {
+						
+						Notifies.put( "Memes", Result.Object.getString("memes") );
+						Notifies.put( "Replies", Result.Object.getString("replies") );
+						Notifies.put( "PrivMemes", Result.Object.getString("memes_priv") );
+						Notifies.put( "PrivReplies", Result.Object.getString("replies_priv") );
+						Notifies.put( "Mentions", Result.Object.getString("mentions") );
+						Notifies.put( "Followers", Result.Object.getString("new_followers") );
+					}
+				} catch (JSONException ex) {
+					Log.e("MeemiEngine - parseNotifyStats", "Problem during response parsing", ex);
+				}
+			}
+		} else {
+			Log.w("MeemiEngine - parseNotifyStats", "You use the wrong 'parse' method");
+		}
+		return Notifies;
 	}
 	
 		
@@ -1197,11 +1338,22 @@ public class MeemiEngine {
 	private static final String GETSINLEMEEME		= "%s/%s";
 	private static final String SEARCH				= "p/search/%s";
 	private static final String POST_LOCATION		= "p/set-location";
-
-	/* FIXME: this is a workaround to solve the issue #12.
-	 * When a location API will be developed, We will fix it. 
-	 */
-	//private static final String POST_LOCATION		= "../m/p/set-location/%s";
+	private static final String GET_NOTIFY_STATS	= "p/notify";
+	private static final String NOTIFIES			= "p/only_new_%s";
+	private static final String MARK_AS_READ		= "p/markl/%s";
+	
+	// lifestream API constant
+	private static final String GENERAL_LS_API		= "meme-sfera";
+	private static final String PRIVATE_LS_API		= "private";
+	private static final String PRIVATE_SENT_LS_API	= "private_sent";
+	
+	// notifies API constant
+	private static final String NTF_MEMES			= "memes";
+	private static final String NTF_REPLIES			= "replies";
+	private static final String NTF_PRIVATE_MEMES	= "memes_priv";
+	private static final String NTF_PRIVATE_REPLIES	= "replies_priv";
+	private static final String NTF_MENTIONS		= "mentions";
+	private static final String NTF_FOLLOWERS		= "followers";
 	
 	
 	private static final String[] NO_CMD_ARGS = new String[]{};

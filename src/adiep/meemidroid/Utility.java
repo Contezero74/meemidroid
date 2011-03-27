@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.impl.cookie.DateParseException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -19,6 +20,12 @@ import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -204,11 +211,12 @@ public class Utility {
 		// Code
 		HTML = HTML.replaceAll("\\[code\\](.*?)\\[/code\\]", "<pre><code>$1</code></pre>");
 		
-		// HTML urls (TODO: probably will be removed in future versions)
-		HTML = HTML.replaceAll("(http|https|ftp|mailto)://(\\S+)", "<a class=\"link\" href=\"$1://$2\" title=\"go to $2\">$1://$2</a>" );
-		
 		// Link - TODO: change link to meemi post view activity (when ready :O) for links to Meemi world
 		HTML = HTML.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<a class=\"link\" href=\"$1\" title=\"go to $2\">$2</a>");
+		
+		// HTML urls (TODO: probably will be removed in future versions)
+		HTML = HTML.replaceAll("(?<!href=\")(http|https|ftp|mailto)://([\\S&&[^<;|]]+)", "<a class=\"link\" href=\"$1://$2\" title=\"go to $2\">$2</a>" );
+		//HTML = HTML.replaceAll("(?<!\\[l:\\s{0,10}?|\\[l:.{0,100}?\\|\\s{0,10}?)(http|https|ftp|mailto)://(\\S+)", "[l:$1://$2|$2]" );
 		
 		// ScreenName 
 		HTML = HTML.replaceAll("\\@(\\w{5,})", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>");
@@ -315,6 +323,11 @@ public class Utility {
 		return FormatedDate;
 	}
 	
+	/**
+	 * This function returns the current version of the application.
+	 * 
+	 * @return	the current version of the application
+	 */
 	public static String getVersion() {
 		String Version = "";
 		try {
@@ -326,5 +339,41 @@ public class Utility {
 		};
 		
 		return Version;
+	}
+	
+	/**
+	 * This function creates a view layout for a standard {@link TabHost} {@link Activity}.
+	 * The view is created programmatically in order to avoid a problem with the
+	 * Eclipse IDE with android ADT plugin: in fact seems that there is a bug in
+	 * TabHost support.
+	 * 
+	 * @param	A	the Activity that wants use the TabHost
+	 * 
+	 * @return	a view layout for a standard TabHost
+	 */
+	public static View createTabHostView(Activity A) {
+		
+		TabWidget TW = new TabWidget(A);
+		TW.setId(android.R.id.tabs);
+		TW.setLayoutParams( new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT) );
+		
+		FrameLayout FL = new FrameLayout(A);
+		FL.setId(android.R.id.tabcontent);
+		FL.setLayoutParams( new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT) );
+		FL.setPadding(5, 5, 5, 5);
+		
+		LinearLayout LL = new LinearLayout(A);
+		LL.setOrientation(LinearLayout.VERTICAL);
+		LL.setLayoutParams( new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT) );
+		LL.setPadding(5, 5, 5, 5);
+		LL.addView(TW);
+		LL.addView(FL);
+		
+		TabHost TH = new TabHost(A);
+		TH.setId(android.R.id.tabhost);
+		TH.setLayoutParams( new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT) );
+		TH.addView(LL);
+		
+		return TH;
 	}
 }

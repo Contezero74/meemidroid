@@ -91,4 +91,8 @@
 <string name="VideoTag">[video]</string>
     <string name="ImageTag">[img]</string>
     <string name="LinkTag">[link]</string>
+<string name="TabLifestreamGeneral">meme sfera</string>
+<string name="TabLifestreamPersonal">personal</string>
+    <string name="TabLifestreamPrivate">private</string>
+    <string name="TabLifestreamPrivateSent">private (sent)</string>
 </resources>

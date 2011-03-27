@@ -304,10 +304,10 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 */
 	private final class MeemisReadListener implements OnClickListener {
 		public void onClick(View arg0) {
+			//Intent Meemis = new Intent(MeemiDroidMain.this, MeemiLifestream.class);
 			Intent Meemis = new Intent(MeemiDroidMain.this, MeemiList.class);
 			
-			Meemis.putExtra(MeemiList.USER, LogedUserID);
-			Meemis.putExtra(MeemiList.TYPE, MeemiList.PERSONAL_LIFESTREAM);
+			Meemis.putExtra(MeemiLifestream.USER, LogedUserID);
 	        
 	        startActivityForResult(Meemis, ACTIVITY_MEEMISSLIST);
 		}
