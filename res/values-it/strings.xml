@@ -63,7 +63,7 @@
     <string name="OtherUserListFollowers">Chi Lo Segue</string>
 <string name="InfoNoConnection">Non è possibile accedere alle informazioni dell\'Utente</string>
 <string name="UserListActivityFollowing">Chi viene seguito da</string>
-    <string name="UserListActivityFollowers">Chi segue</string>
+    
 <string name="search_hint">Ricerca in Meemi</string>
 <string name="MsgComment">Num. di Commenti: </string>
 <string name="BtnReadMessages">Leggi i Messaggi</string>
@@ -91,4 +91,18 @@
 <string name="TabLifestreamPersonal">personale</string>
     <string name="TabLifestreamPrivate">privati</string>
     <string name="TabLifestreamPrivateSent">privati (inviati)</string>
+<string name="TabLifestreamFavorites">favoriti
+</string>
+<string name="MeemiListContextMenuRemoveFav">Togli dai Preferiti</string>
+    <string name="MeemiListContextMenuAddFav">Aggiungi ai Preferiti</string>
+<string name="TitleSettingUIAspect">Interfaccia Utente</string>
+    <string name="FlatDashboardUI">Mostra la Dashboard alternativa</string>
+<string name="UserListContextMenuShowMsg">Mostra i Messaggi dell\'Utente
+</string>
+<string name="LblReplyTo">Rispondi a:</string>
+    <string name="LblStreamOf">Lifestream di</string>
+<string name="UserListActivityFollowers">Chi segue</string>
+    <string name="FastScrollUI">Abilita lo scorrimento veloce delle liste</string>
+<string name="AllertNoInternet">Nessuna Connesisone a Internet Disponibile</string>
+<string name="MsgNewAccount">Non sei ancora registrato? Fallo ora!</string>
 </resources>

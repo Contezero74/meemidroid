@@ -65,9 +65,9 @@
     <string name="BtnCancel">Cancel</string>
 <string name="OtherUserListFollowing">Followers of</string>
     <string name="OtherUserListFollowers">Followed by</string>
-<string name="InfoNoConnection">Is  not possible to access to User information</string>
+<string name="InfoNoConnection">Is not possible to access to User information</string>
 <string name="UserListActivityFollowing">Followed by</string>
-    <string name="UserListActivityFollowers">Followers of</string>
+    
 <string name="search_hint">Search into Meemi</string>
 
     
@@ -95,4 +95,16 @@
 <string name="TabLifestreamPersonal">personal</string>
     <string name="TabLifestreamPrivate">private</string>
     <string name="TabLifestreamPrivateSent">private (sent)</string>
+<string name="TabLifestreamFavorites">favorite</string>
+<string name="MeemiListContextMenuRemoveFav">Remove From Favorite</string>
+    <string name="MeemiListContextMenuAddFav">Add To Favorite</string>
+<string name="TitleSettingUIAspect">UI Aspect</string>
+    <string name="FlatDashboardUI">Use flat button Dashboard</string>
+<string name="UserListContextMenuShowMsg">Show User\'s Messages</string>
+<string name="LblReplyTo">Reply to:</string>
+    <string name="LblStreamOf">Lifestream of</string>
+<string name="UserListActivityFollowers">Followers of</string>
+    <string name="FastScrollUI">Enable fast scroll in list views</string>
+<string name="AllertNoInternet">No Internet Connection Available</string>
+<string name="MsgNewAccount">You don\'t have an account yet? Sign up here!</string>
 </resources>

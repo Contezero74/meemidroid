@@ -4,95 +4,95 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import adiep.meemidroid.ImageLoader;
 import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.R.id;
 import adiep.meemidroid.Utility;
 import adiep.meemidroid.dialogs.UserScreen;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * This class implements an adapter to populate the Meemi replies list. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.3
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 1.0
  */
-public class LazyAdapterRepliesList extends BaseAdapter {
+public class LazyAdapterRepliesList extends LazyAdapterList {
 	
 	/**
-	 * This class represents a row of the list view containing the users list.
+	 * This class represents a row of the list view containing Meemi replies list.
 	 *  
-	 * @author Andrea de Iacovo, and Eros Pedrini
-	 * @version 0.7
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+	 * @version 1.0
 	 */
-	public static class ViewHolder {
-		public ImageView Avatar = null;
+	public static class ViewHolder extends LazyAdapterList.ViewHolder {
 		public TextView Nick = null;
 		public TextView Time = null;
 		public WebView Message = null;
 		//public TextView Message = null;
 		public TextView OtherInfo = null;		
+		public ImageView IsFavorite = null;
+		public ImageView IsPhoto = null;
+		public ImageView IsVideo = null;
+		public ImageView IsLink = null;
+		public ImageView IsPrivate = null;
 
 		public boolean IsLoadOtherReplies = false;
 		public boolean IsOriginalMeemi = false;
 	}
 	
 	/**
-	 * This constructor setups the list view adapters loading the users list to display.
+	 * This constructor setups the list view adapters loading the replies list to display.
 	 * 
 	 * @param A					the current Andorid activity
 	 * @param MeemisData		the Meemis list to display.
 	 */
 	public LazyAdapterRepliesList(Activity A, List<TreeMap<String, String>> MeemisData, final int MaxNumberOfReplies) {
-		this.MyActivity = A;
+		super(A);
 		
 		this.MeemisData = MeemisData;
-		
 		this.MaxNumberOfReplies = MaxNumberOfReplies;
-		
-		LazyAdapterRepliesList.ViewInflater = (LayoutInflater) MyActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		MyImageLoader = ImageLoader.getInstance();
 		
 		JSAccountClick = new AccountClick(A);
 	}
 	
 	/**
-	 * This constructor setups the list view adapters loading the users list to display.
+	 * This constructor setups the list view adapters loading the replies list to display.
 	 * 
 	 * @param A					the current Andorid activity
-	 * @param UsersData			the Meemis list to display.
+	 * @param MeemisData		the Meemis list to display.
 	 * @param ExtraRowStringID	the resource ID for the string to show in the extra "loading" row
 	 */
 	public LazyAdapterRepliesList(Activity A, List<TreeMap<String, String>> MeemisData, final int MaxNumberOfReplies, final int ExtraRowStringID) {
-		this(A, MeemisData, MaxNumberOfReplies);
+		super(A, ExtraRowStringID);
 		
-		ResIDString = ExtraRowStringID;
+		this.MeemisData = MeemisData;
+		this.MaxNumberOfReplies = MaxNumberOfReplies;
+		
+		JSAccountClick = new AccountClick(A);
 	}
 
 	/**
-	 * This constructor setups the list view adapters loading the users list to display.
+	 * This constructor setups the list view adapters loading the replies list to display.
 	 * 
 	 * @param A					the current Andorid activity
 	 * @param UsersData			the Meemis list to display.
 	 * @param ExtraRowStringID	the resource ID for the string to show in the extra "loading" row
 	 * @param ExtraRowImageID	the resource ID for the icon to show in the extra  "loading" row
 	 */
-	public LazyAdapterRepliesList(Activity A, List<TreeMap<String, String>> UsersData, final int MaxNumberOfReplies, final int ExtraRowStringID, final int ExtraRowImageID) {
-		this(A, UsersData, MaxNumberOfReplies, ExtraRowStringID);
+	public LazyAdapterRepliesList(Activity A, List<TreeMap<String, String>> MeemisData, final int MaxNumberOfReplies, final int ExtraRowStringID, final int ExtraRowImageID) {
+		super(A, ExtraRowStringID, ExtraRowImageID);
 		
-		ResIDIcon = ExtraRowImageID;
-		UseResIDIcon = true;
+		this.MeemisData = MeemisData;
+		this.MaxNumberOfReplies = MaxNumberOfReplies;
+		
+		JSAccountClick = new AccountClick(A);
 	}
 
 	/**
@@ -120,21 +120,12 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 	 * @return The data at the specified position
 	 */
 	public Object getItem(int position) {
-		return position;
-	}
-
-	
-	/**
-	 * Get the row id associated with the specified position in the list.
-	 * 
-	 * @param position	The position of the item within the adapter's data set whose row id we want
-	 * 
-	 * @return	The id of the item at the specified position
-	 */
-	public long getItemId(int position) {
-		return position;
-	}
-	
+		if (MeemisData.size() < position) {
+			return MeemisData.get(position);
+		} else {
+			return null;
+		}
+	}	
 
 	/**
 	 * Get a View that displays the data at the specified position in the data set.
@@ -158,12 +149,17 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 		//if (convertView == null) {
 			vi = ViewInflater.inflate(R.layout.meemi_reply_list_row_2, null);
 			holder = new ViewHolder();
-			holder.Avatar = (ImageView) vi.findViewById(R.id.UserAvatar);
+			holder.Image = (ImageView) vi.findViewById(R.id.UserAvatar);
 			holder.Nick = (TextView) vi.findViewById(R.id.UserNick);
 			holder.Time = (TextView) vi.findViewById(R.id.MeemeTime);
 			holder.Message = (WebView) vi.findViewById(R.id.Message);
 			//holder.Message = (TextView) vi.findViewById(R.id.Message);
 			holder.OtherInfo = (TextView) vi.findViewById(R.id.OtherInfo);
+			holder.IsFavorite = (ImageView) vi.findViewById(R.id.FavImage);
+			holder.IsPhoto = (ImageView) vi.findViewById(R.id.PhotoImage);
+			holder.IsVideo = (ImageView) vi.findViewById(R.id.VideoImage);
+			holder.IsLink = (ImageView) vi.findViewById(R.id.Linklmage);
+			holder.IsPrivate = (ImageView) vi.findViewById(R.id.LockImage);
 			vi.setTag(holder);
 		//} else {
 		//	holder = (ViewHolder) vi.getTag();
@@ -203,14 +199,19 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 			if (null != MeemisData) {
 				Map<String, String> Item = MeemisData.get(position);
 			
-				holder.Avatar.setTag( (String)Item.get("MeemerAvatar") );
+				holder.Image.setTag( (String)Item.get("MeemerAvatar") );
 				holder.Nick.setText( (String)Item.get("MeemerName") );
 				holder.Time.setText( (String)Item.get("Time") );
 				
-				String HTMLContent = Utility.wrapForHTML( Utility.fromMeemiToHTML( (String)Item.get("Content") ), CSS );
+				String HTMLContent = "<div>" + Utility.fromMeemiToHTML( (String)Item.get("Content") ) + "</div>";
 				
+				holder.IsPhoto.setVisibility(View.GONE);
+				holder.IsVideo.setVisibility(View.GONE);
+				holder.IsLink.setVisibility(View.GONE);
 				String Header = null;
 				if ( Item.containsKey("Image") ) {
+					holder.IsPhoto.setVisibility(View.VISIBLE);
+					
 					Header = "<div class=\"media\">" +
 					 		 "<div>" +
 							 "<a href=\"" + (String)Item.get("Image") + "\">" +
@@ -219,6 +220,8 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 							 "</div>" +
 							 "</div>";
 				} else if ( Item.containsKey("Video") ) {
+					holder.IsVideo.setVisibility(View.VISIBLE);
+					
 					Header = "<div class=\"media\">" +
 					 "<div>" +
 					 "<a href=\"" + (String)Item.get("Video") + "\">" +
@@ -226,6 +229,8 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 					 "</a>" +
 					 "</div>" +
 					 "</div>";
+				} else if ( Item.containsKey("Link") ) {
+					holder.IsLink.setVisibility(View.VISIBLE);
 				}
 				
 				if (null != Header) {
@@ -238,16 +243,20 @@ public class LazyAdapterRepliesList extends BaseAdapter {
 				//holder.Message.clearCache(false);
 				//holder.Message.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 				//holder.Message.loadData(HTMLContent, "text/html", "utf-8");
-				holder.Message.loadDataWithBaseURL("", HTMLContent, "text/html", "utf-8", "");
+				holder.Message.loadDataWithBaseURL("", Utility.wrapForHTML(HTMLContent, CSS), "text/html", "utf-8", "");
 				holder.Message.addJavascriptInterface(JSAccountClick, "account");
 				holder.Message.getSettings().setJavaScriptEnabled(true);
 				
 				//String HTML = Utility.fromMeemiToHTML( (String)Item.get("Content") );
 				//holder.Message.setText( (String)Item.get("Content") );
-			
+				
+				holder.IsFavorite.setVisibility(View.GONE);
+				if ( "1".equals( (String)Item.get("IsFavorite") ) ) {
+					holder.IsFavorite.setVisibility(View.VISIBLE);
+				}			
 			
 				holder.OtherInfo.setText( MeemiDroidApplication.getContext().getString(R.string.MsgComment) + (String)Item.get("NumOfComments") );
-				MyImageLoader.DisplayImage( (String)Item.get("MeemerAvatar"), MyActivity, holder.Avatar );
+				MyImageLoader.DisplayImage( (String)Item.get("MeemerAvatar"), MyActivity, holder.Image );
 			}
 		}
 		
@@ -283,26 +292,15 @@ public class LazyAdapterRepliesList extends BaseAdapter {
         private Activity BaseActivity = null;
     }
 	
-	private static final int ACTIVITY_USER = 0;
-	
-	
-	private Activity MyActivity = null;
 	
 	private int MaxNumberOfReplies = 0;
-	
 	private List<TreeMap<String, String>> MeemisData = null;
 	
-	private int ResIDString = R.string.ListItemExtraLoad;
-	
-	private boolean UseResIDIcon = false;
-	private int ResIDIcon = 0;
-	
-	private ImageLoader MyImageLoader;
-	
-	private static LayoutInflater ViewInflater = null;
 	
 	private static AccountClick JSAccountClick = null;
 	
+	
+	private static final int ACTIVITY_USER = 0;
 	
 	private static final String CSS =
 		"body { background-color: black; color: white; } " +

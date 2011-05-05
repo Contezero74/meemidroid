@@ -61,6 +61,7 @@ public class MeemiEngine {
 	public static final int CB_NOTIFY_MENTIONS		= 20;
 	public static final int CB_NOTIFY_FOLLOWERS		= 21;
 	public static final int CB_MARK_AS_READ			= 22;
+	public static final int CB_MARK_UNMARK_AS_FAV	= 23;
 	
 	
 	/**
@@ -68,7 +69,7 @@ public class MeemiEngine {
 	 * It encapsulates the JSON API response and contains the identifier of
 	 * the original request in order to support asynchronous requests.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 * @version 1.0
 	 */
 	public class MeemiEngineResult {
@@ -307,7 +308,10 @@ public class MeemiEngine {
 		case LifestreamConst.PRIVATE_SENT_LS:
 			Args		= new String[]{PRIVATE_SENT_LS_API, Integer.toString(Page)};
 			Cmd			= LIFESTREAM;
-			
+			break;
+		case LifestreamConst.FAVORITES_LS:
+			Args		= new String[]{User, Integer.toString(Page)};
+			Cmd			= USERFAVORITE;
 			break;
 		default:
 			// nothing to do
@@ -545,6 +549,20 @@ public class MeemiEngine {
 		executeCommand(MARK_AS_READ, new String[]{MeemiId}, true, CB_MARK_AS_READ, false, false, C, CallbackInstance);
 	}
 	
+	/**
+	 * This method marks (or unmarks) a specified message as favorite.
+	 * 
+	 * @param MeemiId			the identifier of the message to set to read
+	 * @param MeemiUser			???
+	 * @param C					the current Android context
+	 * @param CallbackInstance	the {@link Callbackable} instance (can be null)
+	 * 
+	 * @see #parseResultStatus(MeemiEngineResult)
+	 */
+	public void switchAsFavorite(final String MeemiId, final String MeemiUser, Context C, Callbackable CallbackInstance) {
+		executeCommand(MARK_UNMARK_AS_FAV, new String[]{MeemiUser, MeemiId}, true, CB_MARK_UNMARK_AS_FAV, false, false, C, CallbackInstance);
+	}
+	
 	
 	/**
 	 * This method parses the response to the following requests and return
@@ -553,6 +571,8 @@ public class MeemiEngine {
 	 * - {@link #isCredentialValid(Context, Callbackable)}
 	 * - {@link #setUserBlock(String, boolean, Context, Callbackable)}
 	 * - {@link #setUserFollow(String, boolean, Context, Callbackable)}
+	 * - {@link #markAsRead(String, Context, Callbackable)}
+	 * - {@link #switchAsFavorite(String, String, Context, Callbackable)}
 	 * 
 	 * @param Result	the {@link MeemiEngineResult} to parse
 	 * 
@@ -562,6 +582,7 @@ public class MeemiEngine {
 	 * @see #setUserBlock(String, boolean, Context, Callbackable)
 	 * @see #setUserFollow(String, boolean, Context, Callbackable)
 	 * @see #markAsRead(String, Context, Callbackable)
+	 * @see #switchAsFavorite(String, String, Context, Callbackable)
 	 */
 	public static final boolean parseResultStatus(final MeemiEngineResult Result) {
 		boolean IsStatusOk = false;
@@ -570,7 +591,8 @@ public class MeemiEngine {
 			if (CB_CREDENTIAL_CHECK == Result.CallbackMethod ||
 				CB_USER_BLOCK == Result.CallbackMethod ||
 				CB_USER_FOLLOW == Result.CallbackMethod ||
-				CB_MARK_AS_READ == Result.CallbackMethod) {
+				CB_MARK_AS_READ == Result.CallbackMethod ||+
+				CB_MARK_UNMARK_AS_FAV == Result.CallbackMethod) {
 				
 				try {
 					if (null != Result.Object) {
@@ -1194,7 +1216,7 @@ public class MeemiEngine {
 	 * This method extracts the information stored in a Meemi message in order
 	 * to be managed by the Meemi Client Application.
 	 * 
-	 * @param M	the {@link JSONObject} representing the Meemi message 
+	 * @param M			the {@link JSONObject} representing the Meemi message 
 	 * 
 	 * @return a Map storing all the information needed about the Meemi message
 	 * 
@@ -1213,26 +1235,30 @@ public class MeemiEngine {
 		Message.put( "Content", M.getString("content") );
 		Message.put( "NumOfComments", M.getString("qta_replies") );
 		
+		boolean IsPrivate = !( "0".equals( M.getString("private") ) ); 
+		
+		if (!IsPrivate) {
+			Message.put( "IsFavorite", M.getString("is_preferite") );
+		}
+		
 		if ( "image".equals( M.getString("meme_type") ) ) {
 			Message.put( "Image", M.getString("image") );
 			Message.put( "ImageThumbnail", M.getString("image_small") );
-			Message.put( "ExtraContent", MeemiDroidApplication.getContext().getString(R.string.ImageTag) );
+			//Message.put( "ExtraContent", MeemiDroidApplication.getContext().getString(R.string.ImageTag) );
 		}
 	
 		if ( "video".equals( M.getString("meme_type") ) ) {
 			String VideoSrc = Utility.getVideoSrc( M.getString("video") );
 			Message.put( "Video", VideoSrc );
-			Message.put( "ExtraContent", MeemiDroidApplication.getContext().getString(R.string.VideoTag) );
+			//Message.put( "ExtraContent", MeemiDroidApplication.getContext().getString(R.string.VideoTag) );
 		}
 		
 		if ( "link".equals( M.getString("meme_type") ) ) {
-			Message.put( "ExtraContent", MeemiDroidApplication.getContext().getString(R.string.LinkTag) );
+			Message.put( "Link", M.getString("link") );
 			String linkContent = "[l:" + M.getString("link") + "|" + Message.get("Content") + "]";
 			Message.put( "Content", linkContent);
 		}
-		
-		
-				
+					
 		return Message;
 	}
 	
@@ -1334,13 +1360,15 @@ public class MeemiEngine {
 	private static final String FOLLWINGS			= "%s/followings/page_%s/limit_30";
 	private static final String LIFESTREAM			= "p/%s/page_%s/limit_30";
 	private static final String USERLIFESTREAM		= "%s/wf/page_%s/limit_30";
+	private static final String USERFAVORITE		= "%s/favourites/page_%s/limit_30";
 	private static final String REPLIES				= "%s/%s/replies/%s/20";
 	private static final String GETSINLEMEEME		= "%s/%s";
 	private static final String SEARCH				= "p/search/%s";
 	private static final String POST_LOCATION		= "p/set-location";
 	private static final String GET_NOTIFY_STATS	= "p/notify";
 	private static final String NOTIFIES			= "p/only_new_%s";
-	private static final String MARK_AS_READ		= "p/markl/%s";
+	private static final String MARK_AS_READ		= "p/mark/%s";
+	private static final String MARK_UNMARK_AS_FAV	= "p/fav/%s/%s";
 	
 	// lifestream API constant
 	private static final String GENERAL_LS_API		= "meme-sfera";

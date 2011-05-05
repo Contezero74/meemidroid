@@ -17,7 +17,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -211,6 +214,24 @@ public class Utility {
 		// Code
 		HTML = HTML.replaceAll("\\[code\\](.*?)\\[/code\\]", "<pre><code>$1</code></pre>");
 		
+		// the main idea is:
+		// (a) encode the links and the urls [forward transformation]
+		// (b) apply the other ScreenName transformation
+		// (c) decode back the links and urls [backward transformation]
+		// (d) apply links and url transformations
+		// TODO: this fix has a very high cost, but for the moment we don't have any better solution
+		
+		// forward transformation to resolve ScreenName problem
+		HTML = encodeParts(HTML, "\\[l:([^\\|]*?)\\|([^\\]]*?)\\]");
+		HTML = encodeParts(HTML, "(?<!href=\")(http|https|ftp|mailto)://([\\S&&[^<;|]]+)");
+		
+		// ScreenName
+		HTML = HTML.replaceAll("\\@(\\w{5,})", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>");
+		
+		// backward transformation
+		HTML = decodeParts(HTML, "\\{mds:([^\\}]*?)\\}");
+		
+		
 		// Link - TODO: change link to meemi post view activity (when ready :O) for links to Meemi world
 		HTML = HTML.replaceAll("\\[l:([^\\|]*?)\\|([^\\]]*?)\\]", "<a class=\"link\" href=\"$1\" title=\"go to $2\">$2</a>");
 		
@@ -218,10 +239,51 @@ public class Utility {
 		HTML = HTML.replaceAll("(?<!href=\")(http|https|ftp|mailto)://([\\S&&[^<;|]]+)", "<a class=\"link\" href=\"$1://$2\" title=\"go to $2\">$2</a>" );
 		//HTML = HTML.replaceAll("(?<!\\[l:\\s{0,10}?|\\[l:.{0,100}?\\|\\s{0,10}?)(http|https|ftp|mailto)://(\\S+)", "[l:$1://$2|$2]" );
 		
-		// ScreenName 
-		HTML = HTML.replaceAll("\\@(\\w{5,})", " <a class=\"link\" onClick=\"window.account.clickOnAccount('$1')\" href='#'>@$1</a>");
+		
 		
 		return HTML;
+	}
+	
+	public static String encodeParts(final String Msg, final String RegEx) {
+		Pattern P = Pattern.compile(RegEx, Pattern.CASE_INSENSITIVE);
+			
+		String R = "";
+		
+		Matcher M = P.matcher(Msg);
+		int LastIndex = 0;
+		while ( M.find() ) {
+			R += Msg.substring(LastIndex, M.start()) + "{mds:";
+			
+			String Part2Encode = Msg.substring(M.start(), M.end());
+			R += Base64.encodeToString(Part2Encode.getBytes(), Base64.DEFAULT);
+			
+			R += "}";
+			
+			LastIndex = M.end();
+		}
+		R += Msg.substring(LastIndex);
+		
+		return R;
+	}
+	
+	public static String decodeParts(final String Msg, final String RegEx) {
+		Pattern P = Pattern.compile(RegEx, Pattern.CASE_INSENSITIVE);
+			
+		String R = "";
+		
+		Matcher M = P.matcher(Msg);
+		int LastIndex = 0;
+		while ( M.find() ) {
+			R += Msg.substring(LastIndex, M.start());
+			
+			String Part2Decode = Msg.substring(M.start()+5, M.end()-1);
+			R += new String( Base64.decode(Part2Decode, Base64.DEFAULT) );
+			
+			LastIndex = M.end();
+		}
+		R += Msg.substring(LastIndex);
+		
+		return R;
 	}
 	
 	/**
@@ -375,5 +437,28 @@ public class Utility {
 		TH.addView(LL);
 		
 		return TH;
+	}
+	
+
+	/**
+	 * This method returns true if the terminal is connected to Internet, otherwise it return false.
+	 * 
+	 * @param C	the {@link Context} used to check if the terminal is connected to Internet
+	 * 
+	 * @return	true if the terminal is connected to Internet, otherwise it return false
+	 */
+	public static boolean isInternetConnected(Context C) {
+		ConnectivityManager CM = (ConnectivityManager) C.getSystemService(Context.CONNECTIVITY_SERVICE);
+		
+		if (null != CM) {
+			NetworkInfo NI = CM.getActiveNetworkInfo();
+			
+			if (null != NI) {
+				return NI.isConnected();
+			}
+		}
+	    
+		return false;
+
 	}
 }

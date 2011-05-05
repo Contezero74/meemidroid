@@ -118,7 +118,7 @@ public class PreferencesScreen extends PreferenceActivity {
     
     /**
      * This method check if the location sync need to be enable or
-     * disable and setup the system accordling.
+     * disable and setup the system according.
      */
     private void enableDisableLocationSync() {
     	// location sync
@@ -315,8 +315,7 @@ public class PreferencesScreen extends PreferenceActivity {
 	private ListPreference LocationAccurancy = null;
 	private ListPreference LocationSync = null;
 	
-	private Preference CleanAvatarsCacheBtn = null;
-	 
+	private Preference CleanAvatarsCacheBtn = null;	 
 	
 	private static final int SETTING_CREDENTIAL_DIALOG = 0;
 	

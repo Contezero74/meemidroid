@@ -8,6 +8,7 @@ import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.dialogs.listadapters.LazyAdapterRepliesList;
 import adiep.meemidroid.dialogs.listadapters.LazyAdapterRepliesList.ViewHolder;
+import adiep.meemidroid.engine.LifestreamConst;
 import adiep.meemidroid.engine.MeemiEngine;
 import adiep.meemidroid.engine.MeemiEngine.Callbackable;
 import adiep.meemidroid.engine.MeemiEngine.MeemiEngineResult;
@@ -32,8 +33,8 @@ import android.widget.Button;
 /**
  * This activity represents the list of  meemi representing the replies to a specific meemi. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.5
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 1.0
  */
 public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callbackable {
 	/**
@@ -138,6 +139,9 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
 		
 		getListView().setOnItemClickListener( new ItemClickListener() );
 		
+		// Fastscroll
+		getListView().setFastScrollEnabled( MeemiDroidApplication.Prefs.isFastScrollEnabled() );
+		
 		((Button)findViewById(R.id.ReplyBtn)).setOnClickListener( new ReplyClickListener() );
 	}
 	
@@ -157,11 +161,22 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
 		ViewHolder TmpViewHolder = (ViewHolder)TmpMenuInfo.targetView.getTag();
 		
 		if (!TmpViewHolder.IsLoadOtherReplies) {
+			int FavLabel = R.string.MeemiListContextMenuAddFav;
+			if ( View.GONE != TmpViewHolder.IsFavorite.getVisibility() ) {
+				FavLabel = R.string.MeemiListContextMenuRemoveFav;
+			}
+			
 			menu.add(ContextMenu.NONE, CM_SHOWUSERINFO, ContextMenu.NONE, R.string.MeemiListContextMenuShowUser);
 			
 			if (!TmpViewHolder.IsOriginalMeemi) {
 				menu.add(ContextMenu.NONE, CM_SHOWCOMMENTS, ContextMenu.NONE, R.string.MeemiListContextMenuShowComments);
 				menu.add(ContextMenu.NONE, CM_REPLAY, ContextMenu.NONE, R.string.MeemiListContextMenuReply);
+			}
+			
+			menu.add(ContextMenu.NONE, CM_SWITCHFAV, ContextMenu.NONE, FavLabel);
+			
+			if ( !MeemiDroidApplication.Engine.getCredentials().getUsername().equals( TmpViewHolder.Nick.getText() ) ) {
+				menu.add(ContextMenu.NONE, CM_SHOWUSERMESSAGE, ContextMenu.NONE, R.string.UserListContextMenuShowMsg);
 			}
 		}
 	}
@@ -203,6 +218,29 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
         	startActivityForResult(MeemiReply, ACTIVITY_MEEMI);
         	
         	return true;
+		case CM_SWITCHFAV:
+			MeemiDroidApplication.Engine.switchAsFavorite(MeemiId, UserNick, this, null);
+			
+			TreeMap<String, String> TmpMeme = RepliesList.get(ItemId);
+			if ( "1".equals( TmpMeme.get("IsFavorite") ) ) {
+				TmpMeme.put("IsFavorite", "0");
+			} else {
+				TmpMeme.put("IsFavorite", "1");
+			}
+			RepliesList.set(ItemId, TmpMeme);
+			Replies.notifyDataSetChanged();		
+			
+			return true;
+		case CM_SHOWUSERMESSAGE:
+			Intent ShowUserMessages = new Intent(MeemiRepliesList.this, MeemiLifestream.class);
+			
+			ShowUserMessages.putExtra(MeemiLifestream.USER, UserNick);
+			ShowUserMessages.putExtra(MeemiLifestream.TYPE, LifestreamConst.PERSONAL_LS);
+			
+			startActivityForResult(ShowUserMessages, ACTIVITY_MESSAGES);
+			return true;
+		default:
+			// nothing to do
 		}
 
 		// if nothing handled, let parent deal with it
@@ -286,7 +324,7 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
 	/**
 	 * This private class manages the interaction list item selection.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private class ItemClickListener implements OnItemClickListener {
 		@Override
@@ -313,7 +351,7 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
 	/**
 	 * This private class manages reply button.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private class ReplyClickListener implements OnClickListener {
 		@Override
@@ -336,10 +374,13 @@ public class MeemiRepliesList extends ListActivity implements MeemiEngine.Callba
 	private static final int CM_SHOWUSERINFO = ContextMenu.FIRST;
 	private static final int CM_SHOWCOMMENTS = ContextMenu.FIRST + 1;
 	private static final int CM_REPLAY = ContextMenu.FIRST + 2;
+	private static final int CM_SWITCHFAV = ContextMenu.FIRST + 3;
+	private static final int CM_SHOWUSERMESSAGE = ContextMenu.FIRST + 4;
 	
 	private static final int ACTIVITY_USER = 0;
 	private static final int ACTIVITY_MEEMI = 1;
 	private static final int ACTIVITY_REPLY = 2;
+	private static final int ACTIVITY_MESSAGES = 3;
 	
 	private String Meemer = null;
 	private String MeemeID = null;

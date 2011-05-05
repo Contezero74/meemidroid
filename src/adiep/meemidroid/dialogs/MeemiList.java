@@ -9,6 +9,13 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
 
+/**
+ * This activity represents the tab activity used to access to all the visibile lifestream
+ * of MeemiDroid. 
+ * 
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
+ */
 public class MeemiList extends TabActivity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -55,6 +62,13 @@ public class MeemiList extends TabActivity {
 	    I.putExtra(MeemiLifestream.USER, CurrentUser);
 		I.putExtra(MeemiLifestream.TYPE, LifestreamConst.PRIVATE_SENT_LS);
 		spec = tabHost.newTabSpec("PRSLS").setIndicator( getString(R.string.TabLifestreamPrivateSent), res.getDrawable(R.drawable.tabs_private_sent_ls) ).setContent(I);
+	    tabHost.addTab(spec);
+	    
+	    // - favorites
+	    I = new Intent().setClass(this, MeemiLifestream.class);
+	    I.putExtra(MeemiLifestream.USER, CurrentUser);
+		I.putExtra(MeemiLifestream.TYPE, LifestreamConst.FAVORITES_LS);
+		spec = tabHost.newTabSpec("FVRLS").setIndicator( getString(R.string.TabLifestreamFavorites), res.getDrawable(R.drawable.tabs_favorites_ls) ).setContent(I);
 	    tabHost.addTab(spec);
 
 	    tabHost.setCurrentTab(1); // set to personal

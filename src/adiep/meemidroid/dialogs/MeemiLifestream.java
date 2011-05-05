@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -30,8 +31,8 @@ import android.widget.BaseAdapter;
 /**
  * This activity represents the list of meemi of a specific lifestream. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.1
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 1.0
  */
 public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbackable {
 	/**
@@ -71,8 +72,10 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		CurrentUser = this.getIntent().getStringExtra(USER);
+		CurrentMeemer = this.getIntent().getStringExtra(USER);		
 		ListType = this.getIntent().getIntExtra(TYPE, LifestreamConst.GENERAL_LS);
+		
+		IsCurrentMeemerEqualToLogedUser = CurrentMeemer.equals( MeemiDroidApplication.Engine.getCredentials().getUsername() );
 		
 		setupLayout();
 		
@@ -101,18 +104,30 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 	private void setupLayout() {		
 		setContentView(R.layout.meemi_msgs_list);
 		
+		TextView TW = (TextView)findViewById(R.id.StreamInfoTW);
+		
+		if (IsCurrentMeemerEqualToLogedUser) {
+			TW.setVisibility(View.GONE);
+		} else {
+			TW.setVisibility(View.VISIBLE);
+			TW.setText( MeemiDroidApplication.getContext().getString(R.string.LblStreamOf) + " " + CurrentMeemer);
+		}
+		
 		CurrentPage = 1;
 		
 		//int ResLoadExtraString = R.string.UserListItemExtraLoad;
 		//int ResLoadExtraIcon = R.drawable.main_ui_followers;
 		
-		MeemiDroidApplication.Engine.getLifeStream(CurrentUser, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
+		MeemiDroidApplication.Engine.getLifeStream(CurrentMeemer, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
 		
 		Meemis = new LazyAdapterMeemisList(this, MeemisList);
 		
 		setListAdapter(Meemis);
 		
 		getListView().setOnItemClickListener( new ItemClickListener() );
+		
+		// Fastscroll
+		getListView().setFastScrollEnabled( MeemiDroidApplication.Prefs.isFastScrollEnabled() );
 	}
 	
 	/**
@@ -131,9 +146,19 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 		ViewHolder TmpViewHolder = (ViewHolder)TmpMenuInfo.targetView.getTag();
 		
 		if (!TmpViewHolder.IsLoadOtherMeemi) {
+			int FavLabel = R.string.MeemiListContextMenuAddFav;
+			if ( View.GONE != TmpViewHolder.IsFavorite.getVisibility() ) {
+				FavLabel = R.string.MeemiListContextMenuRemoveFav;
+			}
+			
 			menu.add(ContextMenu.NONE, CM_SHOWUSERINFO, ContextMenu.NONE, R.string.MeemiListContextMenuShowUser);
 			menu.add(ContextMenu.NONE, CM_SHOWCOMMENTS, ContextMenu.NONE, R.string.MeemiListContextMenuShowComments);
 			menu.add(ContextMenu.NONE, CM_REPLAY, ContextMenu.NONE, R.string.MeemiListContextMenuReply);
+			menu.add(ContextMenu.NONE, CM_SWITCHFAV, ContextMenu.NONE, FavLabel);
+			
+			if ( !MeemiDroidApplication.Engine.getCredentials().getUsername().equals( TmpViewHolder.Nick.getText() ) ) {
+				menu.add(ContextMenu.NONE, CM_SHOWUSERMESSAGE, ContextMenu.NONE, R.string.UserListContextMenuShowMsg);
+			}
 		}
 	}
 	
@@ -174,6 +199,29 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
         	startActivityForResult(MeemiReply, ACTIVITY_MEEMI);
         	
         	return true;
+		case CM_SWITCHFAV:
+			MeemiDroidApplication.Engine.switchAsFavorite(MeemiId, UserNick, this, null);
+			
+			TreeMap<String, String> TmpMeme = MeemisList.get(ItemId);
+			if ( "1".equals( TmpMeme.get("IsFavorite") ) ) {
+				TmpMeme.put("IsFavorite", "0");
+			} else {
+				TmpMeme.put("IsFavorite", "1");
+			}
+			MeemisList.set(ItemId, TmpMeme);
+			Meemis.notifyDataSetChanged();		
+			
+			return true;	
+		case CM_SHOWUSERMESSAGE:
+			Intent ShowUserMessages = new Intent(MeemiLifestream.this, MeemiLifestream.class);
+			
+			ShowUserMessages.putExtra(MeemiLifestream.USER, UserNick);
+			ShowUserMessages.putExtra(MeemiLifestream.TYPE, LifestreamConst.PERSONAL_LS);
+			
+			startActivityForResult(ShowUserMessages, ACTIVITY_MESSAGES);
+			return true;
+		default:
+			// nothing to do
 		}
 
 		// if nothing handled, let parent deal with it
@@ -183,7 +231,7 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 	/**
 	 * This private class manages the interaction list item selection.
 	 * 
-	 * @author Andrea de Iacovo, and Eros Pedrini
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
 	 */
 	private class ItemClickListener implements OnItemClickListener {
 		@Override
@@ -201,7 +249,7 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 			} else {
 				++CurrentPage;
 				
-				MeemiDroidApplication.Engine.getLifeStream(CurrentUser, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
+				MeemiDroidApplication.Engine.getLifeStream(CurrentMeemer, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
 			}
 		}
 		
@@ -238,7 +286,7 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 	    		
 	    		CurrentPage = 1;
 	    		
-				MeemiDroidApplication.Engine.getLifeStream(CurrentUser, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
+				MeemiDroidApplication.Engine.getLifeStream(CurrentMeemer, ListType, CurrentPage, MeemiLifestream.this, MeemiLifestream.this);
 				
 	        	break;
 		  default:
@@ -259,12 +307,17 @@ public class MeemiLifestream extends ListActivity implements MeemiEngine.Callbac
 	private static final int CM_SHOWUSERINFO = ContextMenu.FIRST;
 	private static final int CM_SHOWCOMMENTS = ContextMenu.FIRST + 1;
 	private static final int CM_REPLAY = ContextMenu.FIRST + 2;
+	private static final int CM_SWITCHFAV = ContextMenu.FIRST + 3;
+	private static final int CM_SHOWUSERMESSAGE = ContextMenu.FIRST + 4;
 	
 	private static final int ACTIVITY_USER = 0;
 	private static final int ACTIVITY_MEEMI = 1;
 	private static final int ACTIVITY_REPLY = 2;
+	private static final int ACTIVITY_MESSAGES = 3;
 	
-	private String CurrentUser = null;
+	private String CurrentMeemer = null;
+	private boolean IsCurrentMeemerEqualToLogedUser = false;
+	
 	private int ListType = LifestreamConst.GENERAL_LS;
 	//private boolean isUserOwner = false;
 	

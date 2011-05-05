@@ -4,6 +4,10 @@
 		android:key="CredentialConfigPreference"></Preference>
 		
 	<PreferenceScreen android:title="@string/TitleSettingGeneral" android:key="GeneralSharePreferences">
+		<PreferenceCategory android:key="UIAspectCategory" android:title="@string/TitleSettingUIAspect">
+			<CheckBoxPreference android:key="CBUseFlatDashboard" android:title="@string/FlatDashboardUI" android:defaultValue="true"></CheckBoxPreference>
+			<CheckBoxPreference android:key="CBActiveFastScrollListView" android:title="@string/FastScrollUI" android:defaultValue="false"></CheckBoxPreference>
+		</PreferenceCategory>
 		<PreferenceCategory android:key="AvatarsShareCategory" android:title="@string/TitleSettingAvatar">
 			<CheckBoxPreference android:key="CBAutoCleanAvatars" android:title="@string/AvatarsAutoClean"></CheckBoxPreference>
 			<Preference android:title="@string/AvatarsCleanCacheBtn" android:key="AvatarsCleanCacheBtn"></Preference>

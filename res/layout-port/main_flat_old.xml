@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/LinearLayoutMain" android:gravity="center" android:orientation="vertical">
+	<ImageView android:id="@+id/ImageView01" android:src="@drawable/meemidroid" android:layout_width="fill_parent" android:layout_height="40px"></ImageView><TableLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/TableLayoutMain" android:orientation="horizontal" android:padding="5dp" android:weightSum="2" android:stretchColumns="*">
+		<TableRow android:id="@+id/TableRow01" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:orientation="horizontal" android:layout_weight="1" android:weightSum="1">
+			<Button android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/ButtonReadMeemi" android:text="@string/BtnReadMessages" android:drawableTop="@drawable/main_ui_meemis_read" android:textColor="#ffffff" android:background="@android:drawable/list_selector_background" android:drawablePadding="10dp"></Button><Button android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/BtnMessages"
+				android:id="@+id/ButtonSendMeemi" android:drawableTop="@drawable/main_ui_meemis_write" android:textColor="#ffffff" android:background="@android:drawable/list_selector_background" android:drawablePadding="10dp"></Button>
+			
+		</TableRow>
+
+
+
+
+		<TableRow android:id="@+id/TableRow02" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:layout_weight="1" android:weightSum="1">
+			<Button android:layout_height="wrap_content" android:id="@+id/ButtonFollowingUsers"
+				android:text="@string/BtnFollowingUsers" android:drawableTop="@drawable/main_ui_following_2" android:layout_weight="1" android:textColor="#ffffff" android:background="@android:drawable/list_selector_background" android:drawablePadding="10dp"></Button>
+			<Button android:layout_height="wrap_content" android:id="@+id/ButtonFollowerUsers"
+				android:text="@string/BtnFollowerUsers"
+				android:drawableTop="@drawable/main_ui_followers_2" android:layout_weight="1" android:textColor="#ffffff" android:background="@android:drawable/list_selector_background" android:drawablePadding="10dp"></Button>
+		</TableRow>
+
+
+		<TableRow android:id="@+id/TableRow03" android:layout_height="fill_parent" android:layout_weight="1" android:layout_width="fill_parent" android:weightSum="1">
+			<Button android:layout_height="wrap_content" android:text="@string/BtnUserInfo" android:id="@+id/ButtonUserInfo" android:drawableTop="@drawable/main_ui_user" android:layout_width="fill_parent" android:layout_weight="1" android:textColor="#ffffff" android:background="@android:drawable/list_selector_background" android:drawablePadding="10dp"></Button>
+			
+		</TableRow>
+	
+
+</TableLayout>
+</LinearLayout>

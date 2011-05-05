@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import adiep.meemidroid.dialogs.listadapters.LazyAdapterUsersList;
 import adiep.meemidroid.dialogs.listadapters.LazyAdapterUsersList.ViewHolder;
+import adiep.meemidroid.engine.LifestreamConst;
 import adiep.meemidroid.engine.MeemiEngine;
 import adiep.meemidroid.engine.MeemiEngine.MeemiEngineResult;
 import adiep.meemidroid.MeemiDroidApplication;
@@ -28,8 +29,8 @@ import android.widget.TextView;
  * This activity represents the list of users that follow or are followed
  * by a specific Meemi user. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.3
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
  */
 public class MeemiUsersList extends ListActivity implements MeemiEngine.Callbackable {
 	/**
@@ -113,6 +114,9 @@ public class MeemiUsersList extends ListActivity implements MeemiEngine.Callback
 		setListAdapter(Users);
 		
 		getListView().setOnItemClickListener( new ItemClickListener() );
+		
+		// Fastscroll
+		getListView().setFastScrollEnabled( MeemiDroidApplication.Prefs.isFastScrollEnabled() );
 	}
 	
 	/**
@@ -133,6 +137,7 @@ public class MeemiUsersList extends ListActivity implements MeemiEngine.Callback
 		if (!TmpViewHolder.IsLoadOtherUsers) {
 			menu.add(ContextMenu.NONE, CM_SHOWUSERINFO, ContextMenu.NONE, R.string.UserListContextMenuShow);
 			menu.add(ContextMenu.NONE, CM_SENDPRIVATEMSG, ContextMenu.NONE, R.string.UserListContextMenuSend);
+			menu.add(ContextMenu.NONE, CM_SHOWUSERMESSAGE, ContextMenu.NONE, R.string.UserListContextMenuShowMsg);
 		}
 	}
 	
@@ -162,6 +167,16 @@ public class MeemiUsersList extends ListActivity implements MeemiEngine.Callback
         	
         	startActivityForResult(PrivateMessageIntent, ACTIVITY_MEEMI);
 			return true;
+		case CM_SHOWUSERMESSAGE:
+			Intent ShowUserMessages = new Intent(MeemiUsersList.this, MeemiLifestream.class);
+			
+			ShowUserMessages.putExtra(MeemiLifestream.USER, UserNick);
+			ShowUserMessages.putExtra(MeemiLifestream.TYPE, LifestreamConst.PERSONAL_LS);
+			
+			startActivityForResult(ShowUserMessages, ACTIVITY_MESSAGES);
+			return true;
+		default:
+			// nothing to do
 		}
 
 		// if nothing handled, let parent deal with it
@@ -196,9 +211,7 @@ public class MeemiUsersList extends ListActivity implements MeemiEngine.Callback
 		}
 		
 	}
-	
-	
-	
+		
 	/**
 	 * The key to be used with {@link Intent#putExtra(String, String)}
 	 */
@@ -208,9 +221,11 @@ public class MeemiUsersList extends ListActivity implements MeemiEngine.Callback
 	
 	private static final int CM_SHOWUSERINFO = ContextMenu.FIRST;
 	private static final int CM_SENDPRIVATEMSG = ContextMenu.FIRST + 1;
+	private static final int CM_SHOWUSERMESSAGE = ContextMenu.FIRST + 2;
 	
 	private static final int ACTIVITY_USER = 0;
 	private static final int ACTIVITY_MEEMI = 1;
+	private static final int ACTIVITY_MESSAGES = 2;
 	
 	public final static int FOLLOWERS = 0;
 	public final static int FOLLOWING = 1;

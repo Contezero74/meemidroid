@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:id="@+id/LinearLayoutMessagesPost" android:layout_gravity="center_vertical|center_horizontal|center"
+	android:orientation="vertical">
+
+	<LinearLayout android:layout_height="wrap_content" android:id="@+id/ImageAreaLL" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal|center" android:orientation="vertical"><ImageView android:id="@+id/ImagePreview" android:layout_height="75dp" android:layout_width="75dp" android:scaleType="fitCenter"></ImageView>
+</LinearLayout>
+	<LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical" android:id="@+id/MessageAreaLL"><TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal|center" android:id="@+id/MessageInfoTW" android:textStyle="italic"></TextView><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayoutPrivate" android:layout_width="fill_parent" android:orientation="vertical">
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TextViewPrivate" android:text="@string/MeemiSentPrivateUsersList"></TextView>
+		<EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/EditTextPrivateUsers"></EditText>
+	
+</LinearLayout><LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/LinearLayoutMessage" android:orientation="vertical">
+		<EditText android:id="@+id/EditTextMeemi" android:layout_height="fill_parent" android:layout_weight="1" android:lines="5" android:layout_width="fill_parent"></EditText>
+		<Button android:id="@+id/ButtonPostMeemi" android:text="@string/BtnSend" android:layout_height="wrap_content" android:layout_width="fill_parent"></Button>
+	</LinearLayout></LinearLayout>
+	
+
+
+
+
+
+
+
+</LinearLayout>
