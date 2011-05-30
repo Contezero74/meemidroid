@@ -26,8 +26,7 @@
 			android:dialogMessage="@string/SettingImageQuality" android:max="100" android:defaultValue="85" android:key="JpegQuality"></adiep.meemidroid.support.compatibility.SeekBarAndroidPreference>
 
 	</PreferenceScreen>
-	<PreferenceScreen android:key="LocationPreferences"
-		android:title="@string/TitleSettingLocation">
+	<PreferenceScreen android:key="LocationPreferences" android:title="@string/TitleSettingLocation">
 		<CheckBoxPreference android:title="@string/SettingLocationActive" android:key="UseLocation"></CheckBoxPreference>
 		<ListPreference android:dialogTitle="@string/LocationAccuracy"
 			android:entryValues="@array/LocationTypeItems" android:entries="@array/LocationTypeItems"
@@ -35,5 +34,8 @@
 		<ListPreference android:entryValues="@array/LocationSyncItems"
 			android:entries="@array/LocationSyncItems" android:title="@string/LocationTimeInfo"
 			android:dialogTitle="@string/LocationTimeInfo" android:key="LocationSyncMin" android:defaultValue="5"></ListPreference>
+	</PreferenceScreen>
+	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="NotificationPreferences" android:title="@string/TitleSettingNotification">
+		<CheckBoxPreference android:key="UseNotification" android:title="@string/SettingNotificationActive"></CheckBoxPreference>
 	</PreferenceScreen>
 </PreferenceScreen>

@@ -107,4 +107,6 @@
     <string name="FastScrollUI">Enable fast scroll in list views</string>
 <string name="AllertNoInternet">No Internet Connection Available</string>
 <string name="MsgNewAccount">You don\'t have an account yet? Sign up here!</string>
+<string name="TitleSettingNotification">Notification</string>
+<string name="SettingNotificationActive">Activate notification</string>
 </resources>

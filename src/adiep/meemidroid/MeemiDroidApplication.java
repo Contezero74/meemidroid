@@ -2,9 +2,11 @@
 package adiep.meemidroid;
 
 import adiep.meemidroid.engine.MeemiEngine;
+import adiep.meemidroid.engine.MeemiNotificationService;
 import adiep.meemidroid.engine.MeemiPreferences;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 /**
  * This class represents is an extension of the Android Application
@@ -44,6 +46,10 @@ public class MeemiDroidApplication extends Application {
 		
 		if ( Prefs.isAvatarCacheToClean() ) {
 			Engine.clearAvatarCache(false, ApplicationContext);
+		}
+		
+		if ( Prefs.getNotificationInterval() > 0 ){
+			startService(new Intent(this, MeemiNotificationService.class));
 		}
 	}
 	

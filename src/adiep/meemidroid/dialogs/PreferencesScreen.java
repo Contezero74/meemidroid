@@ -4,9 +4,11 @@ import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.dialogs.settings.CredentialsSettingDialog;
 import adiep.meemidroid.engine.MeemiEngine;
+import adiep.meemidroid.engine.MeemiNotificationService;
 import adiep.meemidroid.support.compatibility.SeekBarAndroidPreference;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -64,6 +66,10 @@ public class PreferencesScreen extends PreferenceActivity {
 				
 		changeImageEnableStatus( EnableImage.isChecked() );
 		
+		// notification
+		EnableNotification = (CheckBoxPreference)findPreference("UseNotification");
+		EnableNotification.setOnPreferenceChangeListener( new EnableNotificationChangeListener() );
+
 		
 		// location
 		EnableLocation = (CheckBoxPreference)findPreference("UseLocation");		
@@ -124,10 +130,34 @@ public class PreferencesScreen extends PreferenceActivity {
     	// location sync
         if ( EnableLocation.isChecked() ) {
                 MeemiDroidApplication.Engine.startLocationSync( MeemiDroidApplication.Prefs.getLocationSyncMin() );
+                
         } else {
                 MeemiDroidApplication.Engine.stopLocationSync();
         }
     }
+    
+    /**
+     * This method check if the notification need to be enable or
+     * disable and setup the system according.
+     */
+    private void enableDisableNotificationSync(boolean newvalue) {
+		SharedPreferences.Editor E = ApplicationPreferences.edit();
+		
+		//TBD: this functions is supposed to toggle the activation of
+		//other notification settings, now it's just enabling the logging of
+		//a debug message
+
+    	// location sync
+        if ( newvalue ) {
+			E.putInt( "NotificationInterval", 1000*3 ); //set every 3 seconds
+    		startService(new Intent(this, MeemiNotificationService.class));
+        } else {
+    		stopService(new Intent(this, MeemiNotificationService.class));
+    		E.putInt( "NotificationInterval", 0 );
+        }
+		E.commit();
+    }
+    
     
     
 	/**
@@ -217,6 +247,26 @@ public class PreferencesScreen extends PreferenceActivity {
 			
 			// location sync
 			enableDisableLocationSync();
+			
+			return true;
+		}
+	}
+	
+	/**
+	 * This private class manages to enable/disable the widgets related with
+	 * Notification settings according to the user selection.
+	 * 
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+	 */
+	private final class EnableNotificationChangeListener implements OnPreferenceChangeListener {
+		@Override
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			// the not operator is needed because this listener has been called
+			// before the real status change of the combobox
+			//changeNotificationEnableStatus( !EnableNotification.isChecked() );
+			
+			// location sync
+			enableDisableNotificationSync(newValue.toString()=="true");
 			
 			return true;
 		}
@@ -315,6 +365,8 @@ public class PreferencesScreen extends PreferenceActivity {
 	private ListPreference LocationAccurancy = null;
 	private ListPreference LocationSync = null;
 	
+	private CheckBoxPreference EnableNotification = null;
+
 	private Preference CleanAvatarsCacheBtn = null;	 
 	
 	private static final int SETTING_CREDENTIAL_DIALOG = 0;

@@ -105,4 +105,6 @@
     <string name="FastScrollUI">Abilita lo scorrimento veloce delle liste</string>
 <string name="AllertNoInternet">Nessuna Connesisone a Internet Disponibile</string>
 <string name="MsgNewAccount">Non sei ancora registrato? Fallo ora!</string>
+<string name="TitleSettingNotification">Notifiche</string>
+<string name="SettingNotificationActive">Attiva le notifiche</string>
 </resources>

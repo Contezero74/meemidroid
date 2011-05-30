@@ -183,6 +183,24 @@ public class MeemiPreferences {
 	
 	
 	/**
+	 * This method returns the notification interval in milliseconds 
+	 *  
+	 * @return	notification interval in milliseconds
+	 */
+	public int getNotificationInterval() {
+		int ni = 0;
+
+		try {
+			ni = SharedPref.getInt(MEEMI_NOTIFICATIONITERVAL, 0) ;
+		} catch (Exception ex) {
+			ni = 0;
+		}
+		
+		return ni;
+	}
+
+	
+	/**
 	 * This method retrieves the current credentials from the shared preferences
 	 * system of Android.
 	 */
@@ -302,6 +320,8 @@ public class MeemiPreferences {
 	private static final String MEEMI_FLAT_DASHBOARD = "CBUseFlatDashboard";
 	private static final String MEEMI_FASTSCROLL = "CBActiveFastScrollListView";
 	
+	//notification
+	private static final String MEEMI_NOTIFICATIONITERVAL = "NotificationInterval";
 	
 	// old Preferences:
 	// location
