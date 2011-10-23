@@ -10,8 +10,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -106,6 +109,9 @@ public class CredentialsSettingDialog extends Dialog implements MeemiEngine.Call
 		
 		PasswordText = (EditText)findViewById(R.id.EditTextPassword);
 		
+		// link to meemi for signup
+		((Button)findViewById(R.id.SignUpBtn)).setOnClickListener( new SignupListener() );		
+		
 		setupDialogValues();
 		
 		// this is a workaround for the fact that setOnShowListener has been introduced too late (API level 8)
@@ -167,6 +173,20 @@ public class CredentialsSettingDialog extends Dialog implements MeemiEngine.Call
 			}
 			
 			cancel();
+		}
+	}
+	
+	/**
+	 * This private class manages the interaction with Signup button.
+	 * 
+	 * @author Andrea de Iacovo, and Eros Pedrini
+	 */
+	private class SignupListener implements android.view.View.OnClickListener {
+
+		public void onClick(View V) {		
+			Uri SignupURI = Uri.parse( "http://meemi.com/lang/en/p/signup" );
+			getContext().startActivity( new Intent( Intent.ACTION_VIEW, SignupURI ) );
+
 		}
 	}
 	

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:id="@+id/LinearLayoutMain" android:gravity="center" android:orientation="vertical" android:layout_height="fill_parent" android:weightSum="1">
+	<ImageView android:id="@+id/ImageView01" android:src="@drawable/meemidroid" android:layout_width="fill_parent" android:layout_height="40px"></ImageView>
+<TableLayout android:layout_width="fill_parent"
+	android:gravity="center_horizontal"
+	android:orientation="horizontal" android:id="@+id/TableLayoutMainRow1" android:padding="5dp" android:weightSum="1" android:layout_height="wrap_content" android:layout_weight="1">
+	<TableRow android:id="@+id/TableRow01" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="1" android:weightSum="2">
+		<Button android:layout_height="wrap_content" android:id="@+id/ButtonReadMeemi" android:text="@string/BtnReadMessages" android:drawableTop="@drawable/main_ui_meemis_read" android:layout_weight="1" android:layout_width="0px" android:background="@android:drawable/list_selector_background" android:textColor="#ffffff" android:drawablePadding="10dp"></Button><Button android:layout_height="wrap_content" android:text="@string/BtnMessages"
+			android:id="@+id/ButtonSendMeemi" android:drawableTop="@drawable/main_ui_meemis_write" android:layout_width="0px" android:layout_weight="1" android:background="@android:drawable/list_selector_background" android:textColor="#ffffff" android:drawablePadding="10dp"></Button>
+		
+			
+	</TableRow>
+
+
+
+
+	
+</TableLayout><TableLayout android:layout_height="wrap_content" android:id="@+id/TableLayoutMainRow2" android:weightSum="1" android:layout_width="fill_parent" android:padding="5dp"><TableRow android:id="@+id/TableRow02" android:layout_width="fill_parent" android:layout_height="fill_parent"><Button android:layout_height="wrap_content" android:id="@+id/ButtonFollowingUsers" android:text="@string/BtnFollowingUsers" android:layout_weight="1" android:drawableTop="@drawable/main_ui_following_2" android:layout_width="0px" android:background="@android:drawable/list_selector_background" android:textColor="#ffffff" android:drawablePadding="10dp"></Button>
+		
+		<Button android:layout_height="wrap_content" android:id="@+id/ButtonFollowerUsers" android:layout_weight="1" android:text="@string/BtnFollowerUsers" android:drawableTop="@drawable/main_ui_followers_2" android:layout_width="0px" android:background="@android:drawable/list_selector_background" android:textColor="#ffffff" android:drawablePadding="10dp"></Button>
+			
+	<Button android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/BtnUserInfo" android:id="@+id/ButtonUserInfo" android:drawableTop="@drawable/main_ui_user" android:layout_width="0px" android:background="@android:drawable/list_selector_background" android:textColor="#ffffff" android:drawablePadding="10dp"></Button>
+</TableRow></TableLayout>
+</LinearLayout>

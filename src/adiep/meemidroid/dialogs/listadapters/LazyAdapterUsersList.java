@@ -4,35 +4,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import adiep.meemidroid.ImageLoader;
 import adiep.meemidroid.R;
 import adiep.meemidroid.R.id;
 import android.app.Activity;
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * This class implements an adapter to populate the Meemi friends lists. 
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.5
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 1.0
  */
-public class LazyAdapterUsersList extends BaseAdapter {
+public class LazyAdapterUsersList extends LazyAdapterList {
 	
 	/**
 	 * This class represents a row of the list view containing the users list.
 	 *  
-	 * @author Andrea de Iacovo, and Eros Pedrini
-	 * @version 0.3
+	 * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+	 * @version 1.0
 	 */
-	public static class ViewHolder {
-		public TextView text = null;
-		public ImageView image = null;
+	public static class ViewHolder extends LazyAdapterList.ViewHolder {
+		public TextView Text = null;
 
 		public boolean IsLoadOtherUsers = false;
 	}
@@ -45,15 +40,10 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	 * @param MaxNumberOfUsers	the max number of followers/following stored in current user profile
 	 */
 	public LazyAdapterUsersList(Activity A, List<TreeMap<String, String>> UsersData, final int MaxNumberOfUsers) {
-		this.MyActivity = A;
+		super(A);
 		
 		this.UsersData = UsersData;
-		
 		this.MaxNumberOfUsers = MaxNumberOfUsers;
-		
-		LazyAdapterUsersList.ViewInflater = (LayoutInflater) MyActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		MyImageLoader = ImageLoader.getInstance();
 	}
 	
 	/**
@@ -65,9 +55,10 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	 * @param ExtraRowStringID	the resource ID for the string to show in the extra "loading" row
 	 */
 	public LazyAdapterUsersList(Activity A, List<TreeMap<String, String>> UsersData, final int MaxNumberOfUsers, final int ExtraRowStringID) {
-		this(A, UsersData, MaxNumberOfUsers);
-		
-		ResIDString = ExtraRowStringID;
+		super(A, ExtraRowStringID);
+
+		this.UsersData = UsersData;
+		this.MaxNumberOfUsers = MaxNumberOfUsers;
 	}
 
 	/**
@@ -80,10 +71,10 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	 * @param ExtraRowImageID	the resource ID for the icon to show in the extra  "loading" row
 	 */
 	public LazyAdapterUsersList(Activity A, List<TreeMap<String, String>> UsersData, final int MaxNumberOfUsers, final int ExtraRowStringID, final int ExtraRowImageID) {
-		this(A, UsersData, MaxNumberOfUsers, ExtraRowStringID);
-		
-		ResIDIcon = ExtraRowImageID;
-		UseResIDIcon = true;
+		super(A, ExtraRowStringID, ExtraRowImageID);
+
+		this.UsersData = UsersData;
+		this.MaxNumberOfUsers = MaxNumberOfUsers;
 	}
 
 	/**
@@ -111,21 +102,12 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	 * @return The data at the specified position
 	 */
 	public Object getItem(int position) {
-		return position;
+		if (UsersData.size() < position) {
+			return UsersData.get(position);
+		} else {
+			return null;
+		}
 	}
-
-	
-	/**
-	 * Get the row id associated with the specified position in the list.
-	 * 
-	 * @param position	The position of the item within the adapter's data set whose row id we want
-	 * 
-	 * @return	The id of the item at the specified position
-	 */
-	public long getItemId(int position) {
-		return position;
-	}
-	
 
 	/**
 	 * Get a View that displays the data at the specified position in the data set.
@@ -139,21 +121,21 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// FIXME: this code is really poor: please fix me :)
 		View vi = convertView;
-		ViewHolder holder;
+		ViewHolder Holder;
 		
 		boolean IsExtraLine = position >= UsersData.size();
 		
 		if (convertView == null) {
 			vi = ViewInflater.inflate(R.layout.meemi_users_list_row, null);
-			holder = new ViewHolder();
-			holder.image = (ImageView) vi.findViewById(R.id.UserRowAvatar);
-			holder.text = (TextView) vi.findViewById(R.id.UserRowNick);
-			vi.setTag(holder);
+			Holder = new ViewHolder();
+			Holder.Image = (ImageView) vi.findViewById(R.id.UserRowAvatar);
+			Holder.Text = (TextView) vi.findViewById(R.id.UserRowNick);
+			vi.setTag(Holder);
 		} else {
-			holder = (ViewHolder) vi.getTag();
+			Holder = (ViewHolder) vi.getTag();
 		}
 		
-		if ( !holder.IsLoadOtherUsers ) {
+		if ( !Holder.IsLoadOtherUsers ) {
 			if (IsExtraLine) {
 				vi = ViewInflater.inflate(R.layout.list_row_other_loads, null);
 				
@@ -163,17 +145,17 @@ public class LazyAdapterUsersList extends BaseAdapter {
 					((ImageView)vi.findViewById(id.RowLoadNewIcon)).setImageResource(ResIDIcon);
 				}
 				
-				holder = new ViewHolder();
-				holder.IsLoadOtherUsers = true;
-				vi.setTag(holder);
+				Holder = new ViewHolder();
+				Holder.IsLoadOtherUsers = true;
+				vi.setTag(Holder);
 			}
 		} else {
 			if (!IsExtraLine) {
 				vi = ViewInflater.inflate(R.layout.meemi_users_list_row, null);
-				holder = new ViewHolder();
-				holder.image = (ImageView) vi.findViewById(R.id.UserRowAvatar);
-				holder.text = (TextView) vi.findViewById(R.id.UserRowNick);
-				vi.setTag(holder);
+				Holder = new ViewHolder();
+				Holder.Image = (ImageView) vi.findViewById(R.id.UserRowAvatar);
+				Holder.Text = (TextView) vi.findViewById(R.id.UserRowNick);
+				vi.setTag(Holder);
 			}
 			
 		}
@@ -182,9 +164,9 @@ public class LazyAdapterUsersList extends BaseAdapter {
 			if (null != UsersData) {
 				Map<String, String> Item = UsersData.get(position);
 			
-				holder.text.setText( (String)Item.get("UserId") );
-				holder.image.setTag( (String)Item.get("Avatar") );
-				MyImageLoader.DisplayImage( (String)Item.get("Avatar"), MyActivity, holder.image );
+				Holder.Text.setText( (String)Item.get("UserId") );
+				Holder.Image.setTag( (String)Item.get("Avatar") );
+				MyImageLoader.DisplayImage( (String)Item.get("Avatar"), MyActivity, Holder.Image );
 			}
 		}
 		
@@ -192,18 +174,7 @@ public class LazyAdapterUsersList extends BaseAdapter {
 	}
 	
 	
-	private Activity MyActivity = null;
 	
 	private List<TreeMap<String, String>> UsersData = null;
-	
 	private int MaxNumberOfUsers = 0;
-	
-	private int ResIDString = R.string.ListItemExtraLoad;
-	
-	private boolean UseResIDIcon = false;
-	private int ResIDIcon = 0;
-	
-	private ImageLoader MyImageLoader;
-	
-	private static LayoutInflater ViewInflater = null;
 }

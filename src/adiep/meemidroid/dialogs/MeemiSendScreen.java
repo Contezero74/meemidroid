@@ -1,7 +1,5 @@
 package adiep.meemidroid.dialogs;
 
-import java.io.File;
-
 import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.Utility;
@@ -13,19 +11,22 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * This class represents the Activity to send a Meemi over the Internet.
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.5
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.7
  */
 public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackable {
 	/**
@@ -61,7 +62,11 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
 			}
 		} else {
 			TextBox.setText("");
-			MeemiType.setText("Type: Text");
+			
+			ImagePreview.setVisibility(View.GONE);
+			
+			MessageInfo.setText("");
+			MessageInfo.setVisibility(View.GONE);
 		
 			if (IsAReply) {
 				// If we are sending a reply, after the transmission we have to close this activity ;) 
@@ -95,7 +100,29 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
         
         setupLayout();
         
-        MeemiDroidApplication.Engine.isCredentialValid(this, this);        	
+        if ( Utility.isInternetConnected(this) ) {
+        	MeemiDroidApplication.Engine.isCredentialValid(this, this);
+        } else {
+        	Utility.ShowToast(this, R.string.AllertNoInternet);
+        }
+	}
+	
+    /**
+	 * This method is called when the activity change change orientation or the
+	 * soft-keyboard appears/despairs. In order to use this method the activity
+	 * has to be correctly configured in the AndroidManifest.xml:
+	 * attribute android:configChanges in activity tag.
+	 * 
+	 * @param newConfig 	the new device configuration
+	 *   
+	 * @see android.app.Activity#onConfigurationChanged(Configuration)
+	 */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Log.i("MeemiDroidMain", "onConfigurationChanged()");
+		
+		super.onConfigurationChanged(newConfig);
+		setupLayout();
 	}
 	
 	/**
@@ -131,7 +158,8 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
 		
 		((Button)findViewById(R.id.ButtonPostMeemi)).setOnClickListener( new PostMessage() );
 		
-		MeemiType = (TextView)findViewById(R.id.TextMeemiType);
+		ImagePreview = (ImageView)findViewById(R.id.ImagePreview);
+		MessageInfo = (TextView)findViewById(R.id.MessageInfoTW);
 		TextBox = (EditText)findViewById(R.id.EditTextMeemi);
 		UsersBox = (EditText)findViewById(R.id.EditTextPrivateUsers);	
 		
@@ -142,9 +170,13 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
 		
 		TextBox.requestFocus();
 		
+		// hide all not necessary part
+		ImagePreview.setVisibility(View.GONE);
+		MessageInfo.setVisibility(View.GONE);
+		
         if (null != IntentType) {
         	if ( IntentType.contains("text") ) {
-        		MeemiType.setText("Type: Text");
+        		ImagePreview.setVisibility(View.GONE);
         		TextBox.setText( MyIntent.getExtras().getString(Intent.EXTRA_TEXT) );
         		
         		Type = MessageType.MT_TEXT;
@@ -152,19 +184,25 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
         	
         	if ( IntentType.contains("image") ) {        		
         		Uri ImageUri = (Uri) MyIntent.getExtras().getParcelable(Intent.EXTRA_STREAM);
-        		File ImageFile = new File( ImageUri.getPath() );
+        		//File ImageFile = new File( ImageUri.getPath() );
 
-        		MeemiType.setText("Type: Image [" + ImageFile.getName() + "]" );
+        		ImagePreview.setImageURI( ImageUri );
         		
         		Type = MessageType.MT_IMAGE;
+        		
+        		ImagePreview.setVisibility(View.VISIBLE);
         	}
         }
         
         if (IsAReply) {
-        	MeemiType.setText("Reply to " + MeemerReplyNick);
+        	MessageInfo.setText( MeemiDroidApplication.getContext().getString(R.string.LblReplyTo) + " " + MeemerReplyNick );
         	
         	Type = MessageType.MT_TEXT;
+        	
+        	MessageInfo.setVisibility(View.VISIBLE);
         }
+        
+        findViewById(R.id.ButtonPostMeemi).setEnabled( Utility.isInternetConnected(this) );
 	}
 	
 	
@@ -225,7 +263,8 @@ public class MeemiSendScreen extends Activity implements MeemiEngine.Callbackabl
 	
 	private EditText TextBox = null;
 	private EditText UsersBox = null;
-	private TextView MeemiType = null;
+	private ImageView ImagePreview = null;
+	private TextView MessageInfo = null;
 	
 	private Intent MyIntent = null;
 	private String IntentType = null;

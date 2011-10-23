@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
  * This class represents the MeemiDroid client preferences.
  * 
  * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
- * @version 1.2
+ * @version 1.3
  */
 public class MeemiPreferences {	
 	/**
@@ -20,12 +20,41 @@ public class MeemiPreferences {
 	public MeemiPreferences() {}
 	
 	/**
+	 * This method returns true if the main dashboard has to use the flat style,
+	 * otherwise it returns false.
+	 * 
+	 * @return	true if the main dashboard has to use the flat style, otherwise false
+	 */
+	public boolean isFlatDashboardEnabled() {
+		return SharedPref.getBoolean(MEEMI_FLAT_DASHBOARD, true);
+	}
+	
+	/**
+	 * This method returns true if the fast scroll option for list views is enabled,
+	 * otherwise it returns false.
+	 * 
+	 * @return	true if the fast scroll option for list views is enabled, otherwise false
+	 */
+	public boolean isFastScrollEnabled() {
+		return SharedPref.getBoolean(MEEMI_FASTSCROLL, false);
+	}
+	
+	/**
 	 * This method returns true if the location retrieving is set in preferences.
 	 * 
 	 * @return true if the location retrieving is set
 	 */
 	public boolean isLocationEnabled() {
 		return SharedPref.getBoolean(MEEMI_LOCATION, false);
+	}
+	
+	/**
+	 * This method returns true if the location retrieving is set to compatibility mode in preferences.
+	 * 
+	 * @return true if the location retrieving is set to compatibility mode
+	 */
+	public boolean isLocationCompatibilityModeEnabled()  {
+		return SharedPref.getBoolean(MEEMI_LOCATION_COMPATIBILITY_MODE, false);
 	}
 	
 	/**
@@ -266,18 +295,22 @@ public class MeemiPreferences {
 	private static final String MEEMI_LOCATION_SYNC_MIN = "LocationSyncMin";
 	private static final String MEEMI_LOCATION_SYNC_INDEX = "LocationSyncIndex";
 	private static final String MEEMI_LAST_KNOW_LOCATION = "LastKnowLocation";
+	private static final String MEEMI_LOCATION_COMPATIBILITY_MODE = "UseLocationCompatibility";
 	
 	private String LastKnowLocation = "";
 	
 	
 	// images dimension
-	private static final String MEEMI_IMAGERESIZE = "UseImageResize";
+	private static final String MEEMI_IMAGERESIZE = "CBAutoManagementImage";
 	private static final String MEEMI_IMAGEDIMS = "MaxImageDimensionIndex";
 	private static final String MEEMI_JPEGQUALITY = "JpegQuality";
 	
 	// general
 	// - Avatars
 	private static final String MEEMI_CLEANAVATARS = "CBAutoCleanAvatars";
+	// - UI
+	private static final String MEEMI_FLAT_DASHBOARD = "CBUseFlatDashboard";
+	private static final String MEEMI_FASTSCROLL = "CBActiveFastScrollListView";
 	
 	
 	// old Preferences:

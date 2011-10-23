@@ -15,6 +15,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,7 +59,8 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 				showDialog(SETTING_CREDENTIAL_DIALOG);
 			}
 		} else {
-			activateUI(true);
+			activateUI( true && Utility.isInternetConnected(this) );
+			
 		}
 	};
 	
@@ -83,9 +85,26 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
         
         // prepare splash screen
         Intent Splash = new Intent(this, SplashScreen.class);
+		//IsAlreadyExitFromSplashScreen = true;
         startActivityForResult(Splash, ACTIVITY_SPLASH);
        
         LogedUserID = MeemiDroidApplication.Engine.getCredentials().getUsername();
+    }
+    
+    /**
+     * This method is called when the activity is moved into foreground.
+     */
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	if ( LastTimeDashboardWasFlat != MeemiDroidApplication.Prefs.isFlatDashboardEnabled() ) {
+    		setupLayout();
+    	}
+    	
+    	activateUI( Utility.isInternetConnected(this) );
+    	
+		//IsAlreadyExitFromSplashScreen = false;
     }
     
     /**
@@ -157,7 +176,10 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 		Log.i("MeemiDroidMain", "onConfigurationChanged()");
 		
 		super.onConfigurationChanged(newConfig);
+		
 		setupLayout();
+		
+		activateUI( Utility.isInternetConnected(this) );
 	}
 	
 	/**
@@ -249,7 +271,7 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-			case ACTIVITY_SPLASH:		        
+			case ACTIVITY_SPLASH:				
 		        if ( !MeemiDroidApplication.Engine.getCredentials().isMemorized() ) {
 		        	Utility.ShowToast(this, R.string.AllertNoCredentials);
 		        	
@@ -279,7 +301,12 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	private void setupLayout() {
 		Log.i("MeemiDroidMain", "setupLayout()");
 		
-		setContentView(R.layout.main);
+		int CurrentLayout = R.layout.main;
+		LastTimeDashboardWasFlat = MeemiDroidApplication.Prefs.isFlatDashboardEnabled();
+		if (LastTimeDashboardWasFlat) {
+			CurrentLayout = R.layout.main_flat;
+		}
+		setContentView(CurrentLayout);
         
 		((Button)findViewById(R.id.ButtonReadMeemi)).setOnClickListener( new MeemisReadListener() );
 		((Button)findViewById(R.id.ButtonSendMeemi)).setOnClickListener( new MeemiSendListener() );
@@ -294,6 +321,23 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
         ((Button)findViewById(R.id.ButtonUserInfo)).setEnabled(Active);
         ((Button)findViewById(R.id.ButtonFollowingUsers)).setEnabled(Active);
         ((Button)findViewById(R.id.ButtonFollowerUsers)).setEnabled(Active);
+        
+        if ( MeemiDroidApplication.Prefs.isFlatDashboardEnabled() ) {
+        	Resources Res = getResources();
+	        if (Active)  {
+	        	((Button)findViewById(R.id.ButtonReadMeemi)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_meemis_read), null, null);
+	    		((Button)findViewById(R.id.ButtonSendMeemi)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_meemis_write), null, null);
+	            ((Button)findViewById(R.id.ButtonUserInfo)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_user), null, null);
+	            ((Button)findViewById(R.id.ButtonFollowingUsers)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_following_2), null, null);
+	            ((Button)findViewById(R.id.ButtonFollowerUsers)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_followers_2), null, null);
+	        } else {
+	        	((Button)findViewById(R.id.ButtonReadMeemi)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_meemis_read_gray), null, null);
+	    		((Button)findViewById(R.id.ButtonSendMeemi)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_meemis_write_gray), null, null);
+	            ((Button)findViewById(R.id.ButtonUserInfo)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_user_gray), null, null);
+	            ((Button)findViewById(R.id.ButtonFollowingUsers)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_following_2_gray), null, null);
+	            ((Button)findViewById(R.id.ButtonFollowerUsers)).setCompoundDrawablesWithIntrinsicBounds(null, Res.getDrawable(R.drawable.main_ui_followers_2_gray), null, null);
+	        }
+        }
 	}
 	
 	/**
@@ -304,10 +348,10 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	 */
 	private final class MeemisReadListener implements OnClickListener {
 		public void onClick(View arg0) {
+			//Intent Meemis = new Intent(MeemiDroidMain.this, MeemiLifestream.class);
 			Intent Meemis = new Intent(MeemiDroidMain.this, MeemiList.class);
 			
-			Meemis.putExtra(MeemiList.USER, LogedUserID);
-			Meemis.putExtra(MeemiList.TYPE, MeemiList.PERSONAL_LIFESTREAM);
+			Meemis.putExtra(MeemiLifestream.USER, LogedUserID);
 	        
 	        startActivityForResult(Meemis, ACTIVITY_MEEMISSLIST);
 		}
@@ -400,7 +444,11 @@ public class MeemiDroidMain extends Activity implements MeemiEngine.Callbackable
 	
 	private String LogedUserID = null;
 	private Map<String, String> LogedUserInfo = null;
+	
 	private boolean IsFirstTimeLogin = true; 
+	//private boolean IsAlreadyExitFromSplashScreen = false;
+	
+	private boolean LastTimeDashboardWasFlat = true;
 	
 	private static final int SETTING_CREDENTIAL_DIALOG = 0;
 	

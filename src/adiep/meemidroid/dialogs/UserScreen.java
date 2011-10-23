@@ -6,7 +6,9 @@ import java.util.Map;
 import adiep.meemidroid.MeemiDroidApplication;
 import adiep.meemidroid.R;
 import adiep.meemidroid.Utility;
+import adiep.meemidroid.engine.LifestreamConst;
 import adiep.meemidroid.engine.MeemiEngine;
+import adiep.meemidroid.engine.MeemiEngine.Callbackable;
 import adiep.meemidroid.engine.MeemiEngine.MeemiEngineResult;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,19 +17,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
  * This class represents the Activity to access the user information.
  * 
- * @author Andrea de Iacovo, and Eros Pedrini
- * @version 0.4
+ * @author Andrea de Iacovo, Lorenzo Mele, and Eros Pedrini
+ * @version 0.5
  */
 public class UserScreen extends Activity implements MeemiEngine.Callbackable {
 	/**
@@ -129,6 +134,57 @@ public class UserScreen extends Activity implements MeemiEngine.Callbackable {
 		isUserOwner = MeemiDroidApplication.Engine.getCredentials().getUsername().equalsIgnoreCase(CurrentUser);
 		
 		setupLayout();
+	}
+	
+	/**
+    * This method inflates the activity main menu (from XML resource) and uses it
+    * as activity options menu.
+    * 
+    * @see android.app.Activity#onCreateOptionsMenu(Menu)
+    */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        
+        if (!isUserOwner) {
+        	MenuInflater inflater = getMenuInflater();
+        	inflater.inflate(R.menu.usermenu, menu);
+        }
+        
+        return true;
+    }
+    
+    /** 
+	 * This method defines options menu action.
+	 * 
+	 * @param item	the menu item that was selected
+	 * 
+	 * @return	false to allow normal menu processing to proceed, true to
+	 * 			consume it here.
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(MenuItem)
+	 */
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {  
+    	boolean isConsumed = false;
+    	
+	    switch (item.getItemId()) {
+	    	case R.id.itemUserLifestream:
+	    		Intent ShowUserMessages = new Intent(this, MeemiLifestream.class);
+				
+				ShowUserMessages.putExtra(MeemiLifestream.USER, CurrentUser);
+				ShowUserMessages.putExtra(MeemiLifestream.TYPE, LifestreamConst.PERSONAL_LS);
+				
+				startActivityForResult(ShowUserMessages, ACTIVITY_MESSAGES);
+				
+	        	isConsumed = true;
+	        	
+	        	break;
+		  default:
+			// nothing to do	  
+	    }  
+	    
+	    return isConsumed;  
 	}
 	
 	/**
@@ -275,8 +331,8 @@ public class UserScreen extends Activity implements MeemiEngine.Callbackable {
 		((TextView)findViewById(R.id.TextViewFollowingNumber)).setText( CurrentUserInfo.get("followings") );
 		((TextView)findViewById(R.id.TextViewFollowersNumber)).setText( CurrentUserInfo.get("followers") );
 		
-		((ImageView)findViewById(R.id.ImageViewFollowers)).setOnClickListener(new FollowerClick() );
-		((ImageView)findViewById(R.id.ImageViewFollowing)).setOnClickListener(new FollowingClick() );
+		((ImageButton)findViewById(R.id.ImageViewFollowers)).setOnClickListener(new FollowerClick() );
+		((ImageButton)findViewById(R.id.ImageViewFollowing)).setOnClickListener(new FollowingClick() );
     	
     }
     
@@ -394,6 +450,8 @@ public class UserScreen extends Activity implements MeemiEngine.Callbackable {
 	
 	private Button BtnFollowUnFollow = null;
 	private boolean IsUserFollowed = false;
+	
+	private static final int ACTIVITY_MESSAGES = 1;
 	
 	/* FIXME: the following action should be done, but seem that the
 	 * Users Profiles are not updated in real time; so can happens, for

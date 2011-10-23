@@ -1,5 +1,7 @@
 package adiep.meemidroid.dialogs;
 
+import java.io.IOException;
+
 import adiep.meemidroid.R;
 import adiep.meemidroid.Utility;
 import android.app.Activity;
@@ -63,7 +65,19 @@ public class AboutScreen extends Activity {
         
         webSettings.setSupportZoom(false);
 
-        mWebView.loadUrl("file:///android_asset/" + AboutPath);
+        String CurrentVersion = Utility.getVersion();
+        
+        try {
+        	String AboutHTML = Utility.readTextFileFromAsset(AboutPath);
+        	
+        	AboutHTML = AboutHTML.replaceAll("<!-- <h2>%%VERSION%%</h2>  -->", "<h2>" + CurrentVersion + "</h2>");
+        	
+        	mWebView.loadDataWithBaseURL("", AboutHTML, "text/html", "utf-8", "");
+        } catch (IOException e) {
+			Log.d("AboutScreen - onCreate", "Error during loading the About HTML screen", e);
+			
+            mWebView.loadUrl("file:///android_asset/" + AboutPath);
+		}      
 	}
 	
 	/**
